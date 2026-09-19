@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FhenixDaily — FHE Check-in</title>
+  <title>DailyRitual — FHE Check-in</title>
   <link rel="icon" type="image/jpeg" href="https://pbs.twimg.com/profile_images/2041916799101669376/MNogF3m7_400x400.jpg" />
   <link rel="apple-touch-icon" href="https://pbs.twimg.com/profile_images/2041916799101669376/MNogF3m7_400x400.jpg" />
   <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
@@ -34,8 +34,8 @@
       --warning-text: #8a4d05;
       --warning-border: rgba(138,77,5,0.35);
       --page-bg:
-        radial-gradient(900px 500px at 88% -8%, rgba(255,255,255,0.30), transparent 62%),
-        linear-gradient(160deg, #0b5ba8 0%, #1690c8 48%, #26c4de 100%);
+        linear-gradient(180deg, rgba(30,130,190,0.26), rgba(20,170,205,0.18)),
+        url('https://raw.githubusercontent.com/Perorworld/Fhenix-register/main/fhenixlogobg.jpg');
       --hdr: #ffffff;
       --hdr2: rgba(255,255,255,0.86);
       --card-bg: rgba(234,245,253,0.94);
@@ -68,8 +68,8 @@
       --warning-text: #f2b04a;
       --warning-border: rgba(242,176,74,0.3);
       --page-bg:
-        radial-gradient(900px 500px at 88% -8%, rgba(38,196,222,0.20), transparent 62%),
-        linear-gradient(160deg, #03203a 0%, #06345a 55%, #0a5a7a 100%);
+        linear-gradient(180deg, rgba(0,0,0,0.30), rgba(0,0,0,0.38)),
+        url('https://raw.githubusercontent.com/Perorworld/Fhenix-register/main/fhenixlogobg.jpg');
       --hdr: #ffffff;
       --hdr2: rgba(255,255,255,0.8);
       --card-bg: rgba(10,38,64,0.86);
@@ -79,9 +79,10 @@
 
     html, body {
       min-height: 100vh;
-      background-color: #0e78b5;
+      background-color: #04253f;
       background-image: var(--page-bg);
       background-size: cover;
+      background-position: center;
       background-attachment: fixed;
       background-repeat: no-repeat;
       font-family: var(--font);
@@ -387,7 +388,7 @@
     <div class="logo-wrap">
       <div class="logo-icon"><i class="ti ti-flame" aria-hidden="true"></i></div>
       <div>
-        <h1>FhenixDaily <span class="fhe-badge"><i class="ti ti-lock" aria-hidden="true"></i> FHE</span></h1>
+        <h1>DailyRitual <span class="fhe-badge"><i class="ti ti-lock" aria-hidden="true"></i> FHE</span></h1>
         <div class="header-sub">Mood-private check-ins · Streak XP · Predictions · Quiz</div>
       </div>
     </div>
@@ -535,6 +536,7 @@
     <button class="btn" id="predBtn" onclick="doPrediction()">
       <i class="ti ti-send" aria-hidden="true"></i> Submit prediction
     </button>
+    <div id="predStatus" style="font-size:12px;color:var(--danger-text);text-align:center;margin-top:8px;min-height:18px;"></div>
   </div>
 
   <!-- Quiz -->
@@ -703,15 +705,42 @@
 
   /* ═══════════════ State ═══════════════ */
   // Reads always go through the public RPC so they work even if the wallet is on another network.
-  const rpc = new ethers.providers.StaticJsonRpcProvider(CHAIN.rpc, { chainId: CHAIN.id, name: 'arbitrum-sepolia' });
-  const ritualR = new ethers.Contract(CA, ABI, rpc);
-  const lbR = LB_CA ? new ethers.Contract(LB_CA, LB_ABI, rpc) : null;
+  const RPC_URLS = [
+    CHAIN.rpc,
+    'https://arbitrum-sepolia-rpc.publicnode.com',
+    'https://arbitrum-sepolia.drpc.org'
+  ];
+  const rpcs = RPC_URLS.map(u => new ethers.providers.StaticJsonRpcProvider(u, { chainId: CHAIN.id, name: 'arbitrum-sepolia' }));
+  const rpc = rpcs[0];
+  const HAS_LB = !!LB_CA;
+  const ritualRs = rpcs.map(p => new ethers.Contract(CA, ABI, p));
+  const lbRs = HAS_LB ? rpcs.map(p => new ethers.Contract(LB_CA, LB_ABI, p)) : [];
+
+  function withTimeout(promise, ms) {
+    return new Promise((resolve, reject) => {
+      const t = setTimeout(() => reject(new Error('RPC timeout')), ms);
+      promise.then(v => { clearTimeout(t); resolve(v); }, e => { clearTimeout(t); reject(e); });
+    });
+  }
+  // Try each RPC in turn (then the connected wallet) until one answers.
+  async function readFrom(list, addr, abi, fn) {
+    const all = list.slice();
+    if (provider) all.push(new ethers.Contract(addr, abi, provider));
+    let last;
+    for (const c of all) {
+      try { return await withTimeout(fn(c), 9000); } catch (e) { last = e; }
+    }
+    throw last;
+  }
+  const readRitual = fn => readFrom(ritualRs, CA, ABI, fn);
+  const readLb = fn => readFrom(lbRs, LB_CA, LB_ABI, fn);
 
   let provider = null, signer = null, ritualW = null, lbW = null;
   let userAddr = null, activeRaw = null, activeWallet = null, rawHandlers = null;
   let selectedMood = null, predDir = null;
   let selectedAssetId = 'bitcoin', selectedAssetSym = 'BTC';
   let livePrices = {};
+  let lastTxError = '';
   let checkedInToday = false;
   let lbJoined = false, roundsLeft = null, quizPts = 0;
 
@@ -1013,23 +1042,41 @@
     }
   }
 
+  function rawMsg(e) {
+    return String((e && ((e.error && e.error.message) || (e.data && e.data.message) || e.reason || e.message)) || e);
+  }
+  function shortErr(e) {
+    const m = rawMsg(e).replace(/\s*\[ See:.*$/, '').replace(/\(.*$/, '').trim();
+    return m.length > 80 ? m.slice(0, 80) + '…' : m;
+  }
   function friendlyError(e) {
     const code = e && (e.code || (e.error && e.error.code));
     if (code === 4001 || code === 'ACTION_REJECTED') return 'Cancelled in your wallet';
-    const msg = String((e && (e.reason || (e.error && e.error.message) || (e.data && e.data.message) || e.message)) || e);
+    const msg = rawMsg(e);
     if (/insufficient funds/i.test(msg)) return 'Not enough Arbitrum Sepolia ETH for gas';
     if (/already checked|already joined/i.test(msg)) return msg.replace(/^.*?(already[^"']*).*$/i, '$1');
-    return msg.length > 140 ? msg.slice(0, 140) + '…' : msg;
+    if (e && (e.code === 'UNPREDICTABLE_GAS_LIMIT' || e.code === 'CALL_EXCEPTION' || /execution reverted/i.test(msg))) {
+      return 'The contract rejected this transaction (' + shortErr(e) + '). If you already did this today, try again tomorrow.';
+    }
+    return msg.length > 200 ? msg.slice(0, 200) + '…' : msg;
   }
 
   // Estimate gas first (surfaces reverts before the wallet popup), add a safety buffer, then send.
   async function callWithBuffer(contract, method, args) {
-    const est = await contract.estimateGas[method](...args);
-    const overrides = { gasLimit: est.mul(125).div(100) };
+    const overrides = {};
+    try {
+      const est = await contract.estimateGas[method](...args);
+      overrides.gasLimit = est.mul(125).div(100);
+    } catch (e) {
+      // A real contract rejection is shown to the user; a flaky RPC just gets a safe fixed gas limit.
+      if (e && (e.code === 'UNPREDICTABLE_GAS_LIMIT' || e.code === 'CALL_EXCEPTION')) throw e;
+      overrides.gasLimit = ethers.BigNumber.from(1500000);
+    }
     try {
       // Give the fee 2x headroom over the current gas price so a rising base fee can't reject the transaction.
-      const fd = await rpc.getFeeData();
-      if (fd.gasPrice) {
+      let fd = null;
+      for (const p of rpcs) { try { fd = await withTimeout(p.getFeeData(), 6000); break; } catch (e) { /* try the next RPC */ } }
+      if (fd && fd.gasPrice) {
         const cap = fd.gasPrice.mul(2);
         overrides.maxFeePerGas = fd.maxFeePerGas && fd.maxFeePerGas.gt(cap) ? fd.maxFeePerGas : cap;
         overrides.maxPriorityFeePerGas = ethers.constants.Zero;
@@ -1040,6 +1087,7 @@
 
   // One entry point for every write: connect if needed → right network → send → confirm → toast.
   async function sendTx(label, build) {
+    lastTxError = '';
     if (!userAddr) {
       const ok = await requireWallet();
       if (!ok) return null;
@@ -1054,7 +1102,8 @@
       return rc;
     } catch (e) {
       console.error(label, e);
-      toast(friendlyError(e), 6000);
+      lastTxError = friendlyError(e);
+      toast(lastTxError, 8000);
       return null;
     }
   }
@@ -1105,8 +1154,47 @@
     }
   }
 
+  function paintPrice(key, usd, change) {
+    livePrices[key] = usd;
+    const pe = $('price-' + key), ce = $('change-' + key);
+    if (pe) pe.textContent = '$' + usd.toLocaleString(undefined, { maximumFractionDigits: usd < 1 ? 4 : 2 });
+    if (ce && change != null) {
+      ce.textContent = (change >= 0 ? '+' : '') + change.toFixed(2) + '%';
+      ce.className = 'asset-change ' + (change >= 0 ? 'pos' : 'neg');
+    }
+  }
+
+  // Backup price source in case CoinGecko is rate-limited or blocked.
+  const CC_MAP = { BTC: 'bitcoin', ETH: 'ethereum', SOL: 'solana', ARB: 'arbitrum', BNB: 'binancecoin', HYPE: 'hyperliquid',
+                   NEAR: 'near', KCS: 'kucoin-shares', PAXG: 'pax-gold', ONDO: 'ondo-finance', PENDLE: 'pendle' };
+  async function fetchCryptoCompare() {
+    const res = await fetch('https://min-api.cryptocompare.com/data/pricemultifull?tsyms=USD&fsyms=' + Object.keys(CC_MAP).join(','));
+    if (!res.ok) throw new Error('CryptoCompare HTTP ' + res.status);
+    const data = await res.json();
+    const raw = data.RAW || {};
+    let n = 0;
+    for (const sym of Object.keys(CC_MAP)) {
+      const d = raw[sym] && raw[sym].USD;
+      if (!d || !d.PRICE) continue;
+      paintPrice(CC_MAP[sym], d.PRICE, d.CHANGEPCT24HOUR);
+      n++;
+    }
+    if (!n) throw new Error('CryptoCompare returned no prices');
+  }
+
   async function fetchPrices() {
     const results = await Promise.allSettled([fetchCoinGeckoPrices(), fetchMetalsPrices()]);
+    if (results[0].status === 'rejected') {
+      try { await fetchCryptoCompare(); results[0] = { status: 'fulfilled' }; } catch (e) { console.error('price fallback failed', e); }
+    }
+    if (results[1].status === 'rejected' && livePrices['pax-gold']) {
+      // PAX Gold tracks one troy ounce of gold, so it works as a stand-in for the gold price.
+      paintPrice('GOLD', livePrices['pax-gold']);
+      results[1] = { status: 'fulfilled' };
+    }
+    document.querySelectorAll('.asset-btn').forEach(b => {
+      if (!livePrices[b.dataset.id]) { const el = $('price-' + b.dataset.id); if (el) el.textContent = 'n/a'; }
+    });
     const ok = results.filter(r => r.status === 'fulfilled').length;
     const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     if (ok === results.length) {
@@ -1156,7 +1244,7 @@
   async function loadStats() {
     if (!userAddr) return;
     try {
-      const raw = await ritualR.getUserStats(userAddr);
+      const raw = await readRitual(c => c.getUserStats(userAddr));
       const streak = Number(raw[1]), longest = Number(raw[2]), xp = Number(raw[3]), badge = Number(raw[4]);
       $('statStreak').textContent = streak;
       $('statLongest').textContent = 'Longest: ' + longest;
@@ -1165,7 +1253,7 @@
       $('statBadge').textContent = badge > 0 ? 'Tier ' + badge : 'None';
       $('statBadgeSub').textContent = badge > 0 ? (badge * 7) + '-day badge' : 'Earn at 7-day streak';
       renderBadges(badge);
-      checkedInToday = await ritualR.isCheckedInToday(userAddr);
+      checkedInToday = await readRitual(c => c.isCheckedInToday(userAddr));
       updateCheckinBtn();
     } catch (e) {
       console.error('loadStats error:', e);
@@ -1175,7 +1263,7 @@
 
   async function loadGlobal() {
     try {
-      const [tu, tc] = await Promise.all([ritualR.totalUsers(), ritualR.totalCheckIns()]);
+      const [tu, tc] = await Promise.all([readRitual(c => c.totalUsers()), readRitual(c => c.totalCheckIns())]);
       $('statUsers').textContent = Number(tu);
       $('statCheckIns').textContent = 'check-ins: ' + Number(tc);
     } catch (e) { console.error('loadGlobal error:', e); }
@@ -1184,7 +1272,7 @@
   async function loadPredictions() {
     if (!userAddr) return;
     try {
-      const count = (await ritualR.getPredictionCount(userAddr)).toNumber();
+      const count = (await readRitual(c => c.getPredictionCount(userAddr))).toNumber();
       const list = $('predList');
       if (count === 0) {
         list.innerHTML = '<div style="font-size:13px;color:var(--text2);">No predictions yet. Submit your first above.</div>';
@@ -1193,7 +1281,7 @@
       const start = Math.max(0, count - 8);
       const idx = [];
       for (let i = count - 1; i >= start; i--) idx.push(i);
-      const rows = await Promise.all(idx.map(i => ritualR.getPrediction(userAddr, i)));
+      const rows = await Promise.all(idx.map(i => readRitual(c => c.getPrediction(userAddr, i))));
       list.innerHTML = rows.map((r, n) => {
         const [asset, up, price, , resolved, correct] = r;
         const pStr = '$' + (price.toNumber() / 100).toLocaleString(undefined, { maximumFractionDigits: 2 });
@@ -1249,6 +1337,8 @@
       await Promise.allSettled([loadStats(), loadGlobal(), loadLeaderboard()]);
     }
     updateCheckinBtn();
+    if (!rc && lastTxError) { const st = $('checkinStatus'); st.textContent = lastTxError; st.style.color = 'var(--danger-text)'; }
+    else $('checkinStatus').style.color = '';
   }
 
   async function doPrediction() {
@@ -1269,6 +1359,7 @@
     }
     btn.disabled = false;
     btn.innerHTML = '<i class="ti ti-send" aria-hidden="true"></i> Submit prediction';
+    $('predStatus').textContent = (!rc && lastTxError) ? lastTxError : '';
   }
 
   async function doResolve() {
@@ -1298,7 +1389,7 @@
     out.innerHTML = '<div style="font-size:13px;color:var(--text2);margin-top:8px;">Loading…</div>';
     try {
       const [stats, checkedIn, pCount] = await Promise.all([
-        ritualR.getUserStats(addr), ritualR.isCheckedInToday(addr), ritualR.getPredictionCount(addr)
+        readRitual(c => c.getUserStats(addr)), readRitual(c => c.isCheckedInToday(addr)), readRitual(c => c.getPredictionCount(addr))
       ]);
       const streak = Number(stats[1]), longest = Number(stats[2]), xp = Number(stats[3]), badge = Number(stats[4]);
       out.innerHTML = `
@@ -1326,20 +1417,20 @@
   /* ═══════════════ Leaderboard (XP + quiz points) ═══════════════ */
   async function loadLeaderboard(manual) {
     const box = $('lbList');
-    if (!lbR) {
+    if (!HAS_LB) {
       box.innerHTML = '<div class="notice">Leaderboard isn\'t linked yet. Deploy the FhenixLeaderboard contract and paste its address into <code>LB_CA</code> in this file.</div>';
       $('joinBtn').style.display = 'none';
       return;
     }
     if (manual) box.innerHTML = '<div class="empty">Refreshing…</div>';
     try {
-      const count = (await lbR.playerCount()).toNumber();
+      const count = (await readLb(c => c.playerCount())).toNumber();
       if (!count) {
         box.innerHTML = '<div class="empty">No players yet. Take the quiz or join to claim the first spot.</div>';
         updateJoinBtn();
         return;
       }
-      const r = await lbR.getPlayers(0, Math.min(count, 300));
+      const r = await readLb(c => c.getPlayers(0, Math.min(count, 300)));
       let rows = r[0].map((a, i) => {
         const xp = Number(r[1][i]), pts = Number(r[2][i]);
         return { addr: a, xp, pts, total: xp + pts };
@@ -1363,13 +1454,13 @@
       updateJoinBtn();
     } catch (e) {
       console.error('loadLeaderboard error:', e);
-      box.innerHTML = '<div class="empty">Couldn\'t load the leaderboard. Tap refresh to try again.</div>';
+      box.innerHTML = '<div class="empty">Couldn\'t load the leaderboard (' + esc(shortErr(e)) + '). Tap refresh to try again.</div>';
     }
   }
 
   function updateJoinBtn() {
     const b = $('joinBtn');
-    if (!lbR || lbJoined) { b.style.display = 'none'; return; }
+    if (!HAS_LB || lbJoined) { b.style.display = 'none'; return; }
     b.style.display = 'inline-flex';
     b.innerHTML = '<i class="ti ti-user-plus" aria-hidden="true"></i> ' + (userAddr ? 'Join leaderboard' : 'Connect & join leaderboard');
   }
@@ -1543,10 +1634,10 @@
     const el = $('quizMeta');
     const best = Number(lsGet('dr-quiz-best') || 0);
     const bestTxt = best ? ' · Best round on this device: ' + best + '/' + QUIZ_LEN : '';
-    if (!lbR) { el.textContent = 'Practice mode — scores aren\'t saved yet' + bestTxt; return; }
+    if (!HAS_LB) { el.textContent = 'Practice mode — scores aren\'t saved yet' + bestTxt; return; }
     if (!userAddr) { el.textContent = 'Connect a wallet to earn leaderboard points' + bestTxt; updateJoinBtn(); return; }
     try {
-      const p = await lbR.getPlayer(userAddr);
+      const p = await readLb(c => c.getPlayer(userAddr));
       lbJoined = !!p[0]; quizPts = Number(p[1]); roundsLeft = Number(p[3]);
       el.textContent = 'Your quiz points: ' + quizPts + ' · Scored rounds left today: ' + roundsLeft;
     } catch (e) {
