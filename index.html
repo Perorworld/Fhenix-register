@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DailyRitual — FHE Check-in</title>
+  <title>FhenixDaily — FHE Check-in</title>
   <link rel="icon" type="image/jpeg" href="https://pbs.twimg.com/profile_images/2041916799101669376/MNogF3m7_400x400.jpg" />
   <link rel="apple-touch-icon" href="https://pbs.twimg.com/profile_images/2041916799101669376/MNogF3m7_400x400.jpg" />
   <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
@@ -11,64 +11,77 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    /* ── Theme tokens: bright by default ── */
     :root {
-      --bg: #ffffff;
-      --bg2: #f5f5f4;
-      --bg3: #eeede9;
-      --text: #1a1a18;
-      --text2: #6b6b67;
-      --text3: #9c9c97;
-      --border: rgba(0,0,0,0.12);
-      --border2: rgba(0,0,0,0.22);
-      --info-bg: #e6f1fb;
-      --info-text: #185fa5;
-      --info-border: rgba(24,95,165,0.3);
-      --success-bg: #eaf3de;
-      --success-text: #3b6d11;
-      --success-border: rgba(59,109,17,0.3);
-      --danger-bg: #fcebeb;
-      --danger-text: #a32d2d;
-      --danger-border: rgba(163,45,45,0.3);
-      --warning-bg: #faeeda;
-      --warning-text: #854f0b;
-      --warning-border: rgba(133,79,11,0.3);
+      --bg: #eaf5fd;
+      --bg2: #d8ebf8;
+      --bg3: #c3def1;
+      --text: #0b2540;
+      --text2: #3b5873;
+      --text3: #64809a;
+      --border: rgba(11,37,64,0.14);
+      --border2: rgba(11,37,64,0.28);
+      --info-bg: #e3f0ff;
+      --info-text: #0f56a8;
+      --info-border: rgba(15,86,168,0.35);
+      --success-bg: #e4f5d8;
+      --success-text: #2f6a0c;
+      --success-border: rgba(47,106,12,0.35);
+      --danger-bg: #fde8e8;
+      --danger-text: #a12626;
+      --danger-border: rgba(161,38,38,0.35);
+      --warning-bg: #fff1d6;
+      --warning-text: #8a4d05;
+      --warning-border: rgba(138,77,5,0.35);
+      --page-bg:
+        radial-gradient(900px 500px at 88% -8%, rgba(255,255,255,0.30), transparent 62%),
+        linear-gradient(160deg, #0b5ba8 0%, #1690c8 48%, #26c4de 100%);
+      --hdr: #ffffff;
+      --hdr2: rgba(255,255,255,0.86);
+      --card-bg: rgba(234,245,253,0.94);
+      --card-border: rgba(255,255,255,0.35);
+      --shadow: 0 4px 18px rgba(4,40,80,0.18);
       --radius: 8px;
       --radius-lg: 12px;
       --font: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       --mono: 'SF Mono', 'Fira Code', monospace;
     }
-
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: #1c1c1a;
-        --bg2: #252523;
-        --bg3: #2e2e2c;
-        --text: #f0efe9;
-        --text2: #9a9a95;
-        --text3: #636360;
-        --border: rgba(255,255,255,0.1);
-        --border2: rgba(255,255,255,0.2);
-        --info-bg: #0c2a45;
-        --info-text: #85b7eb;
-        --info-border: rgba(133,183,235,0.25);
-        --success-bg: #172604;
-        --success-text: #97c459;
-        --success-border: rgba(151,196,89,0.25);
-        --danger-bg: #2c0f0f;
-        --danger-text: #f09595;
-        --danger-border: rgba(240,149,149,0.25);
-        --warning-bg: #2a1a04;
-        --warning-text: #ef9f27;
-        --warning-border: rgba(239,159,39,0.25);
-      }
+    body.theme-dark {
+      --bg: #0d2942;
+      --bg2: #143a5a;
+      --bg3: #1b4a72;
+      --text: #eaf4fb;
+      --text2: #a9c3d8;
+      --text3: #7b97ae;
+      --border: rgba(255,255,255,0.12);
+      --border2: rgba(255,255,255,0.24);
+      --info-bg: #10304f;
+      --info-text: #8ec1f5;
+      --info-border: rgba(142,193,245,0.3);
+      --success-bg: #17300a;
+      --success-text: #9ed35f;
+      --success-border: rgba(158,211,95,0.3);
+      --danger-bg: #3a1414;
+      --danger-text: #f4a0a0;
+      --danger-border: rgba(244,160,160,0.3);
+      --warning-bg: #37230a;
+      --warning-text: #f2b04a;
+      --warning-border: rgba(242,176,74,0.3);
+      --page-bg:
+        radial-gradient(900px 500px at 88% -8%, rgba(38,196,222,0.20), transparent 62%),
+        linear-gradient(160deg, #03203a 0%, #06345a 55%, #0a5a7a 100%);
+      --hdr: #ffffff;
+      --hdr2: rgba(255,255,255,0.8);
+      --card-bg: rgba(10,38,64,0.86);
+      --card-border: rgba(255,255,255,0.12);
+      --shadow: 0 2px 14px rgba(0,0,0,0.3);
     }
 
     html, body {
       min-height: 100vh;
-      background-color: var(--bg3);
-      background-image: url('https://raw.githubusercontent.com/Perorworld/Fhenix-register/main/fhenixlogobg.jpg');
+      background-color: #0e78b5;
+      background-image: var(--page-bg);
       background-size: cover;
-      background-position: center;
       background-attachment: fixed;
       background-repeat: no-repeat;
       font-family: var(--font);
@@ -77,161 +90,92 @@
       line-height: 1.6;
     }
 
-    .page {
-      background: rgba(0,0,0,0.45);
-      min-height: 100vh;
-      padding-bottom: 4rem;
-    }
-
-    .card, .stat-card {
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      background: rgba(255,255,255,0.08) !important;
-      border-color: rgba(255,255,255,0.15) !important;
-    }
-
-    @media (prefers-color-scheme: light) {
-      .card, .stat-card {
-        background: rgba(255,255,255,0.72) !important;
-        border-color: rgba(0,0,0,0.1) !important;
-      }
-      .page { background: rgba(0,0,0,0.18); }
-    }
-
-    .page-inner {
-      max-width: 720px;
-      margin: 0 auto;
-      padding: 2rem 1.25rem 4rem;
-    }
+    .page { min-height: 100vh; }
+    .page-inner { max-width: 720px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
 
     /* ── Header ── */
     header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 1rem;
-      margin-bottom: 1.75rem;
+      display: flex; align-items: flex-start; justify-content: space-between;
+      gap: 1rem; margin-bottom: 1.75rem; flex-wrap: wrap;
     }
     .logo-wrap { display: flex; align-items: center; gap: 10px; }
     .logo-icon {
-      width: 40px; height: 40px;
-      border-radius: var(--radius);
-      background: var(--text);
-      color: var(--bg);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 20px;
+      width: 40px; height: 40px; border-radius: var(--radius);
+      background: #0b2540; color: #26c4de;
+      display: flex; align-items: center; justify-content: center; font-size: 20px;
     }
-    h1 { font-size: 20px; font-weight: 600; color: var(--text); }
-    .header-sub { font-size: 13px; color: var(--text2); margin-top: 1px; }
+    h1 { font-size: 20px; font-weight: 600; color: var(--hdr, var(--text)); }
+    .header-sub { font-size: 13px; color: var(--hdr2, var(--text2)); margin-top: 1px; }
     .fhe-badge {
       display: inline-flex; align-items: center; gap: 4px;
-      font-size: 11px; padding: 2px 7px;
-      border-radius: var(--radius);
+      font-size: 11px; padding: 2px 7px; border-radius: var(--radius);
       background: var(--info-bg); color: var(--info-text);
-      border: 0.5px solid var(--info-border);
-      vertical-align: middle; margin-left: 6px;
+      border: 0.5px solid var(--info-border); vertical-align: middle; margin-left: 6px;
     }
 
     #connectBtn {
       padding: 8px 16px; font-size: 13px; font-family: var(--font);
       border-radius: var(--radius); border: 0.5px solid var(--border2);
-      background: transparent; color: var(--text); cursor: pointer;
+      background: var(--bg); color: var(--text); cursor: pointer;
       display: flex; align-items: center; gap: 6px; white-space: nowrap;
-      transition: background 0.15s;
-      flex-shrink: 0;
+      transition: background 0.15s; flex-shrink: 0;
     }
     #connectBtn:hover { background: var(--bg2); }
     #connectBtn.connected { border-color: var(--success-border); color: var(--success-text); }
+    #connectBtn img { width: 16px; height: 16px; border-radius: 4px; }
 
     .header-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
     .icon-btn {
       width: 34px; height: 34px; border-radius: var(--radius);
-      border: 0.5px solid var(--border2); background: transparent;
+      border: 0.5px solid var(--border2); background: var(--bg);
       color: var(--text); cursor: pointer; font-size: 16px;
-      display: flex; align-items: center; justify-content: center;
-      transition: background 0.15s;
+      display: flex; align-items: center; justify-content: center; transition: background 0.15s;
     }
-    .icon-btn:hover { background: rgba(255,255,255,0.1); }
+    .icon-btn:hover { background: var(--bg2); }
     #disconnectBtn {
       padding: 8px 14px; font-size: 13px; font-family: var(--font);
       border-radius: var(--radius); border: 0.5px solid var(--danger-border);
-      background: transparent; color: var(--danger-text); cursor: pointer;
-      display: flex; align-items: center; gap: 6px; white-space: nowrap;
-      transition: background 0.15s;
+      background: var(--bg); color: var(--danger-text); cursor: pointer;
+      display: flex; align-items: center; gap: 6px; white-space: nowrap; transition: background 0.15s;
     }
     #disconnectBtn:hover { background: var(--danger-bg); }
-    body.theme-light {
-      --bg:#ffffff;--bg2:#f5f5f4;--bg3:#eeede9;--text:#1a1a18;--text2:#6b6b67;--text3:#9c9c97;
-      --border:rgba(0,0,0,0.12);--border2:rgba(0,0,0,0.22);
-      --info-bg:#e6f1fb;--info-text:#185fa5;--info-border:rgba(24,95,165,0.3);
-      --success-bg:#eaf3de;--success-text:#3b6d11;--success-border:rgba(59,109,17,0.3);
-      --danger-bg:#fcebeb;--danger-text:#a32d2d;--danger-border:rgba(163,45,45,0.3);
-      --warning-bg:#faeeda;--warning-text:#854f0b;--warning-border:rgba(133,79,11,0.3);
-    }
-    body.theme-dark {
-      --bg:#1c1c1a;--bg2:#252523;--bg3:#2e2e2c;--text:#f0efe9;--text2:#9a9a95;--text3:#636360;
-      --border:rgba(255,255,255,0.1);--border2:rgba(255,255,255,0.2);
-      --info-bg:#0c2a45;--info-text:#85b7eb;--info-border:rgba(133,183,235,0.25);
-      --success-bg:#172604;--success-text:#97c459;--success-border:rgba(151,196,89,0.25);
-      --danger-bg:#2c0f0f;--danger-text:#f09595;--danger-border:rgba(240,149,149,0.25);
-      --warning-bg:#2a1a04;--warning-text:#ef9f27;--warning-border:rgba(239,159,39,0.25);
-    }
 
     /* ── Stats grid ── */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0,1fr));
-      gap: 10px;
-      margin-bottom: 1.25rem;
-    }
+    .stats-grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 10px; margin-bottom: 1.25rem; }
     @media (max-width: 500px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
-    .stat-card {
-      background: var(--bg);
-      border: 0.5px solid var(--border);
-      border-radius: var(--radius);
-      padding: 14px 16px;
+    .stat-card, .card {
+      background: var(--card-bg);
+      border: 0.5px solid var(--card-border);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
     }
-    .stat-label {
-      font-size: 12px; color: var(--text2); margin-bottom: 5px;
-      display: flex; align-items: center; gap: 5px;
-    }
+    .stat-card { border-radius: var(--radius); padding: 14px 16px; }
+    .stat-label { font-size: 12px; color: var(--text2); margin-bottom: 5px; display: flex; align-items: center; gap: 5px; }
     .stat-value { font-size: 22px; font-weight: 600; color: var(--text); }
     .stat-sub { font-size: 11px; color: var(--text3); margin-top: 3px; }
     .xp-bar-bg { width: 100%; height: 3px; background: var(--border); border-radius: 2px; margin-top: 6px; }
-    .xp-bar-fill { height: 3px; border-radius: 2px; background: var(--text); transition: width 0.4s; }
+    .xp-bar-fill { height: 3px; border-radius: 2px; background: var(--info-text); transition: width 0.4s; }
 
     /* ── Cards ── */
-    .card {
-      background: var(--bg);
-      border: 0.5px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 1.25rem;
-      margin-bottom: 1rem;
-    }
+    .card { border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1rem; }
     .card-title {
       font-size: 14px; font-weight: 600; color: var(--text);
-      margin-bottom: 0.875rem;
-      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 0.875rem; display: flex; align-items: center; gap: 8px;
     }
     .card-title i { font-size: 16px; color: var(--text2); }
+    .card-title .grow { flex: 1; }
     .card-desc { font-size: 13px; color: var(--text2); margin-bottom: 14px; }
 
     /* ── Mood buttons ── */
     .mood-row { display: flex; gap: 8px; margin-bottom: 1rem; }
     .mood-btn {
-      flex: 1; padding: 10px 6px;
-      border-radius: var(--radius);
-      border: 0.5px solid var(--border);
-      background: var(--bg2); cursor: pointer;
-      font-size: 13px; color: var(--text2);
-      text-align: center; transition: all 0.15s;
-      font-family: var(--font);
+      flex: 1; padding: 10px 6px; border-radius: var(--radius);
+      border: 0.5px solid var(--border); background: var(--bg2); cursor: pointer;
+      font-size: 13px; color: var(--text2); text-align: center; transition: all 0.15s; font-family: var(--font);
     }
     .mood-btn:hover { border-color: var(--border2); color: var(--text); }
-    .mood-btn.selected {
-      border-color: var(--info-border);
-      background: var(--info-bg); color: var(--info-text);
-    }
+    .mood-btn.selected { border-color: var(--info-border); background: var(--info-bg); color: var(--info-text); }
     .mood-emoji { font-size: 20px; display: block; margin-bottom: 3px; }
     .mood-label { font-size: 11px; display: block; }
 
@@ -239,18 +183,21 @@
     .btn {
       width: 100%; padding: 10px 16px; font-size: 14px; font-family: var(--font);
       border-radius: var(--radius); border: 0.5px solid var(--border2);
-      background: transparent; color: var(--text); cursor: pointer;
-      display: flex; align-items: center; justify-content: center; gap: 8px;
-      transition: background 0.15s;
+      background: var(--bg); color: var(--text); cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 8px; transition: background 0.15s;
     }
     .btn:hover:not(:disabled) { background: var(--bg2); }
-    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
-    .btn.primary {
-      background: var(--text); color: var(--bg);
-      border-color: var(--text);
-    }
-    .btn.primary:hover:not(:disabled) { opacity: 0.88; }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+    .btn.primary { background: var(--text); color: var(--bg); border-color: var(--text); }
+    .btn.primary:hover:not(:disabled) { opacity: 0.88; background: var(--text); }
     .btn.sm { width: auto; padding: 7px 14px; font-size: 13px; }
+    .btn:focus-visible, .mood-btn:focus-visible, .asset-btn:focus-visible, .wallet-item:focus-visible,
+    .quiz-opt:focus-visible, .icon-btn:focus-visible, #connectBtn:focus-visible {
+      outline: 2px solid var(--info-text); outline-offset: 2px;
+    }
+    .spin { display: inline-block; animation: spin 0.9s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @media (prefers-reduced-motion: reduce) { .spin { animation: none; } }
 
     /* ── Form fields ── */
     .field-group { margin-bottom: 12px; }
@@ -258,23 +205,18 @@
     input[type="text"], input[type="number"], select, textarea {
       width: 100%; padding: 8px 10px; font-size: 13px; font-family: var(--font);
       border-radius: var(--radius); border: 0.5px solid var(--border);
-      background: var(--bg2); color: var(--text);
-      outline: none; transition: border-color 0.15s;
+      background: var(--bg2); color: var(--text); outline: none; transition: border-color 0.15s;
     }
-    input[type="text"]:focus, input[type="number"]:focus, select:focus {
-      border-color: var(--border2);
-    }
+    input[type="text"]:focus, input[type="number"]:focus, select:focus { border-color: var(--info-text); }
     .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
     @media (max-width: 460px) { .two-col { grid-template-columns: 1fr; } }
 
     /* ── Direction toggle ── */
     .dir-toggle { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .dir-btn {
-      padding: 9px; border-radius: var(--radius);
-      border: 0.5px solid var(--border); background: var(--bg2);
-      cursor: pointer; font-size: 13px; font-family: var(--font);
-      text-align: center; color: var(--text2); transition: all 0.15s;
-      display: flex; align-items: center; justify-content: center; gap: 6px;
+      padding: 9px; border-radius: var(--radius); border: 0.5px solid var(--border); background: var(--bg2);
+      cursor: pointer; font-size: 13px; font-family: var(--font); text-align: center; color: var(--text2);
+      transition: all 0.15s; display: flex; align-items: center; justify-content: center; gap: 6px;
     }
     .dir-btn:hover { border-color: var(--border2); color: var(--text); }
     .dir-btn.up.sel { background: var(--success-bg); border-color: var(--success-border); color: var(--success-text); }
@@ -283,25 +225,17 @@
     /* ── Tabs ── */
     .tab-row { display: flex; gap: 4px; margin-bottom: 1rem; }
     .tab-btn {
-      padding: 5px 12px; font-size: 13px; font-family: var(--font);
-      border-radius: var(--radius); border: none;
-      background: transparent; color: var(--text2); cursor: pointer;
-      transition: background 0.15s;
+      padding: 5px 12px; font-size: 13px; font-family: var(--font); border-radius: var(--radius);
+      border: none; background: transparent; color: var(--text2); cursor: pointer; transition: background 0.15s;
     }
     .tab-btn.active { background: var(--bg2); color: var(--text); font-weight: 500; }
 
     /* ── Prediction list ── */
-    .pred-list { max-height: 200px; overflow-y: auto; }
-    .pred-item {
-      display: flex; align-items: center; gap: 10px;
-      padding: 9px 0; border-bottom: 0.5px solid var(--border);
-      font-size: 13px;
-    }
+    .pred-list { max-height: 220px; overflow-y: auto; }
+    .pred-item { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 0.5px solid var(--border); font-size: 13px; }
     .pred-item:last-child { border-bottom: none; }
     .pred-asset { font-weight: 600; min-width: 36px; }
-    .pill {
-      padding: 2px 8px; border-radius: var(--radius); font-size: 11px;
-    }
+    .pill { padding: 2px 8px; border-radius: var(--radius); font-size: 11px; }
     .pill.up { background: var(--success-bg); color: var(--success-text); }
     .pill.down { background: var(--danger-bg); color: var(--danger-text); }
     .pred-price { color: var(--text2); font-size: 12px; }
@@ -312,112 +246,135 @@
     /* ── Badges ── */
     .badge-row { display: flex; flex-wrap: wrap; gap: 8px; }
     .badge {
-      display: flex; align-items: center; gap: 5px;
-      padding: 5px 10px; border-radius: var(--radius);
-      border: 0.5px solid var(--border); font-size: 12px;
-      color: var(--text3); background: var(--bg2);
+      display: flex; align-items: center; gap: 5px; padding: 5px 10px; border-radius: var(--radius);
+      border: 0.5px solid var(--border); font-size: 12px; color: var(--text3); background: var(--bg2);
     }
-    .badge.earned {
-      background: var(--warning-bg); border-color: var(--warning-border);
-      color: var(--warning-text);
-    }
+    .badge.earned { background: var(--warning-bg); border-color: var(--warning-border); color: var(--warning-text); }
     .badge i { font-size: 14px; }
 
-    /* ── Asset section label ── */
+    /* ── Asset picker ── */
     .asset-section-label {
-      font-size: 11px; font-weight: 500; color: var(--text3);
-      text-transform: uppercase; letter-spacing: 0.06em;
-      display: flex; align-items: center; gap: 5px;
-      margin-bottom: 8px;
+      font-size: 11px; font-weight: 500; color: var(--text3); text-transform: uppercase;
+      letter-spacing: 0.06em; display: flex; align-items: center; gap: 5px; margin-bottom: 8px;
     }
     .asset-section-label i { font-size: 13px; }
-
-    /* ── Asset picker grid ── */
-    .asset-grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0,1fr));
-      gap: 8px;
-    }
+    .asset-grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 8px; }
     @media (max-width: 520px) { .asset-grid { grid-template-columns: repeat(3, 1fr); } }
     @media (max-width: 340px) { .asset-grid { grid-template-columns: repeat(2, 1fr); } }
     .asset-btn {
-      display: flex; flex-direction: column; align-items: flex-start;
-      padding: 10px 10px 8px;
-      border-radius: var(--radius); border: 0.5px solid var(--border);
-      background: var(--bg2); cursor: pointer; text-align: left;
-      transition: border-color 0.15s, background 0.15s;
-      gap: 1px;
+      display: flex; flex-direction: column; align-items: flex-start; padding: 10px 10px 8px;
+      border-radius: var(--radius); border: 0.5px solid var(--border); background: var(--bg2);
+      cursor: pointer; text-align: left; transition: border-color 0.15s, background 0.15s; gap: 1px;
+      font-family: var(--font); color: var(--text);
     }
     .asset-btn:hover { border-color: var(--border2); }
-    .asset-btn.active {
-      border-color: var(--info-border);
-      background: var(--info-bg);
-    }
-    .asset-sym {
-      font-size: 13px; font-weight: 600;
-      color: var(--text);
-    }
+    .asset-btn.active { border-color: var(--info-border); background: var(--info-bg); }
+    .asset-sym { font-size: 13px; font-weight: 600; color: var(--text); }
     .asset-btn.active .asset-sym { color: var(--info-text); }
     .asset-name { font-size: 10px; color: var(--text3); }
-    .asset-btn.active .asset-name { color: var(--info-text); opacity: 0.7; }
-    .asset-price {
-      font-size: 12px; font-weight: 500;
-      color: var(--text); margin-top: 4px;
-      font-family: var(--mono);
-    }
+    .asset-btn.active .asset-name { color: var(--info-text); opacity: 0.75; }
+    .asset-price { font-size: 12px; font-weight: 500; color: var(--text); margin-top: 4px; font-family: var(--mono); }
     .asset-btn.active .asset-price { color: var(--info-text); }
     .asset-change { font-size: 10px; }
     .asset-change.pos { color: var(--success-text); }
     .asset-change.neg { color: var(--danger-text); }
 
     /* ── FHE note ── */
-    .fhe-note {
-      display: flex; align-items: center; gap: 7px;
-      font-size: 12px; color: var(--text2); margin-bottom: 12px;
-    }
+    .fhe-note { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--text2); margin-bottom: 12px; }
     .fhe-note i { font-size: 13px; color: var(--info-text); }
 
-    /* ── Footer ── */
-    footer {
-      margin-top: 1.5rem;
-      display: flex; align-items: center; justify-content: center; gap: 12px;
-      flex-wrap: wrap;
+    /* ── Quiz card ── */
+    .quiz-meta { font-size: 12px; color: var(--text2); margin-top: 10px; text-align: center; min-height: 18px; }
+    .level-pill {
+      font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: var(--radius);
+      background: var(--warning-bg); color: var(--warning-text); border: 0.5px solid var(--warning-border);
     }
+    .quiz-progress { display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: var(--text2); margin-bottom: 6px; }
+    .quiz-bar { width: 100%; height: 4px; background: var(--border); border-radius: 2px; margin-bottom: 14px; }
+    .quiz-bar > div { height: 4px; border-radius: 2px; background: var(--info-text); transition: width 0.3s; }
+    .quiz-q { font-size: 16px; font-weight: 600; line-height: 1.4; margin-bottom: 14px; }
+    .quiz-opt {
+      display: block; width: 100%; text-align: left; padding: 10px 12px; margin-bottom: 8px;
+      border-radius: var(--radius); border: 0.5px solid var(--border); background: var(--bg2);
+      color: var(--text); font-size: 14px; font-family: var(--font); cursor: pointer; transition: all 0.15s;
+    }
+    .quiz-opt:hover:not(:disabled) { border-color: var(--border2); }
+    .quiz-opt:disabled { cursor: default; }
+    .quiz-opt.right { background: var(--success-bg); border-color: var(--success-border); color: var(--success-text); }
+    .quiz-opt.wrong { background: var(--danger-bg); border-color: var(--danger-border); color: var(--danger-text); }
+    .quiz-why { font-size: 13px; color: var(--text2); background: var(--bg2); border-radius: var(--radius); padding: 10px 12px; margin: 4px 0 12px; }
+    .quiz-score { text-align: center; padding: 6px 0 14px; }
+    .quiz-score .big { font-size: 40px; font-weight: 700; line-height: 1.1; }
+    .quiz-score .msg { font-size: 14px; color: var(--text2); margin-top: 4px; }
+    .quiz-actions { display: grid; gap: 8px; }
+
+    /* ── Leaderboard ── */
+    .lb-row {
+      display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: var(--radius);
+      font-size: 13px; border: 0.5px solid transparent;
+    }
+    .lb-row + .lb-row { margin-top: 2px; }
+    .lb-row.me { background: var(--info-bg); border-color: var(--info-border); }
+    .lb-rank { width: 28px; text-align: center; font-weight: 600; color: var(--text2); flex-shrink: 0; }
+    .lb-addr { font-family: var(--mono); font-size: 12px; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .lb-you { font-family: var(--font); font-size: 10px; padding: 1px 6px; border-radius: 6px; background: var(--info-text); color: var(--bg); margin-left: 6px; }
+    .lb-break { font-size: 11px; color: var(--text3); text-align: right; white-space: nowrap; }
+    .lb-total { font-weight: 700; min-width: 44px; text-align: right; }
+    .lb-head { display: flex; gap: 10px; padding: 0 10px 6px; font-size: 11px; color: var(--text3); }
+    .lb-head span:first-child { width: 28px; text-align: center; }
+    .lb-head span:nth-child(2) { flex: 1; }
+    .notice { font-size: 13px; color: var(--text2); background: var(--warning-bg); border: 0.5px solid var(--warning-border); border-radius: var(--radius); padding: 10px 12px; }
+    .empty { font-size: 13px; color: var(--text2); padding: 6px 2px; }
+
+    /* ── Modals ── */
+    .modal-backdrop {
+      position: fixed; inset: 0; background: rgba(15,23,42,0.45);
+      backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+      display: none; align-items: center; justify-content: center; padding: 16px; z-index: 1000;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal {
+      width: 100%; max-width: 420px; max-height: 90vh; overflow-y: auto;
+      background: var(--bg); color: var(--text); border: 0.5px solid var(--border2);
+      border-radius: var(--radius-lg); padding: 1.25rem; box-shadow: 0 20px 60px rgba(15,23,42,0.28);
+    }
+    .modal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.9rem; gap: 10px; }
+    .modal-head h2 { font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+    .wallet-item {
+      display: flex; align-items: center; gap: 12px; width: 100%; padding: 11px 12px; margin-bottom: 8px;
+      border-radius: var(--radius); border: 0.5px solid var(--border); background: var(--bg2);
+      color: var(--text); font-size: 14px; font-family: var(--font); cursor: pointer; text-align: left;
+      text-decoration: none; transition: border-color 0.15s;
+    }
+    .wallet-item:hover { border-color: var(--info-border); }
+    .wallet-item img, .wallet-ico {
+      width: 28px; height: 28px; border-radius: 6px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; background: var(--bg3); font-size: 16px;
+    }
+    .wallet-sub { font-size: 11px; color: var(--text3); margin: 12px 0 8px; }
+
+    /* ── Footer ── */
+    footer { margin-top: 1.5rem; display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; }
     .ca-pill {
-      font-size: 11px; font-family: var(--mono);
-      background: var(--bg); border: 0.5px solid var(--border);
-      border-radius: var(--radius); padding: 4px 10px;
-      color: var(--text2); cursor: pointer; transition: color 0.15s;
-      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 11px; font-family: var(--mono); background: var(--bg); border: 0.5px solid var(--border);
+      border-radius: var(--radius); padding: 4px 10px; color: var(--text2); cursor: pointer;
+      transition: color 0.15s; display: inline-flex; align-items: center; gap: 5px;
     }
     .ca-pill:hover { color: var(--text); }
-    .network-tag { font-size: 11px; color: var(--text3); }
+    .network-tag { font-size: 11px; color: var(--text2); background: var(--card-bg); border: 0.5px solid var(--card-border); border-radius: var(--radius); padding: 4px 10px; }
 
     /* ── Toast ── */
     .toast {
-      position: fixed; bottom: 24px; right: 24px;
-      padding: 10px 16px; border-radius: var(--radius);
-      font-size: 13px; font-family: var(--font);
-      background: var(--bg); border: 0.5px solid var(--border);
-      color: var(--text); max-width: 280px;
-      opacity: 0; pointer-events: none;
-      transition: opacity 0.2s; z-index: 999;
+      position: fixed; bottom: 24px; right: 24px; padding: 10px 16px; border-radius: var(--radius);
+      font-size: 13px; font-family: var(--font); background: var(--bg); border: 0.5px solid var(--border2);
+      color: var(--text); max-width: 300px; box-shadow: var(--shadow);
+      opacity: 0; pointer-events: none; transition: opacity 0.2s; z-index: 2000;
     }
     .toast.show { opacity: 1; }
+    .toast.show.link { pointer-events: auto; }
+    @media (max-width: 500px) { .toast { left: 16px; right: 16px; max-width: none; } }
 
-    /* ── Divider ── */
-    hr { border: none; border-top: 0.5px solid var(--border); margin: 1rem 0; }
-
-    @media (prefers-color-scheme: dark) {
-      .stat-value, h1, .card-title { color: #f0efe9; }
-      .asset-sym { color: #f0efe9; }
-      .asset-price { color: #d4d3cc; }
-    }
-
-    /* ── Checkin status ── */
     #checkinStatus { font-size: 12px; color: var(--text3); text-align: center; margin-top: 8px; min-height: 18px; }
-
-    /* ── Lookup result ── */
     #lookupResult { margin-top: 10px; }
   </style>
 </head>
@@ -430,16 +387,16 @@
     <div class="logo-wrap">
       <div class="logo-icon"><i class="ti ti-flame" aria-hidden="true"></i></div>
       <div>
-        <h1>DailyRitual <span class="fhe-badge"><i class="ti ti-lock" aria-hidden="true"></i> FHE</span></h1>
-        <div class="header-sub">Mood-private check-ins · Streak XP · Crypto predictions</div>
+        <h1>FhenixDaily <span class="fhe-badge"><i class="ti ti-lock" aria-hidden="true"></i> FHE</span></h1>
+        <div class="header-sub">Mood-private check-ins · Streak XP · Predictions · Quiz</div>
       </div>
     </div>
     <div class="header-actions">
-      <button id="themeBtn" class="icon-btn" onclick="toggleTheme()" title="Toggle dark / light">
+      <button id="themeBtn" class="icon-btn" onclick="toggleTheme()" title="Toggle dark / light" aria-label="Toggle dark or light theme">
         <i class="ti ti-moon" id="themeIcon" aria-hidden="true"></i>
       </button>
-      <button id="connectBtn" onclick="connectWallet()">
-        <i class="ti ti-wallet" aria-hidden="true"></i>
+      <button id="connectBtn" onclick="onConnectClick()">
+        <i class="ti ti-wallet" id="connectIcon" aria-hidden="true"></i>
         <span id="connectLabel">Connect wallet</span>
       </button>
       <button id="disconnectBtn" onclick="disconnectWallet()" style="display:none;">
@@ -499,87 +456,67 @@
     <div class="card-title"><i class="ti ti-chart-line" aria-hidden="true"></i> Prediction</div>
     <p class="card-desc">Pick any asset and call the direction. Correct calls in 24 hours earn +15 XP.</p>
 
-    <!-- Crypto section -->
-    <div class="asset-section-label">
-      <i class="ti ti-currency-bitcoin" aria-hidden="true"></i> Crypto
-    </div>
+    <div class="asset-section-label"><i class="ti ti-currency-bitcoin" aria-hidden="true"></i> Crypto</div>
     <div class="asset-grid" id="assetGrid">
-      <button class="asset-btn active" data-id="bitcoin"           data-sym="BTC"   data-src="cg"      onclick="selectAsset(this)">
+      <button class="asset-btn active" data-id="bitcoin" data-sym="BTC" onclick="selectAsset(this)">
         <span class="asset-sym">BTC</span><span class="asset-name">Bitcoin</span>
-        <span class="asset-price" id="price-bitcoin">…</span>
-        <span class="asset-change" id="change-bitcoin"></span>
+        <span class="asset-price" id="price-bitcoin">…</span><span class="asset-change" id="change-bitcoin"></span>
       </button>
-      <button class="asset-btn" data-id="ethereum"                 data-sym="ETH"   data-src="cg"      onclick="selectAsset(this)">
+      <button class="asset-btn" data-id="ethereum" data-sym="ETH" onclick="selectAsset(this)">
         <span class="asset-sym">ETH</span><span class="asset-name">Ethereum</span>
-        <span class="asset-price" id="price-ethereum">…</span>
-        <span class="asset-change" id="change-ethereum"></span>
+        <span class="asset-price" id="price-ethereum">…</span><span class="asset-change" id="change-ethereum"></span>
       </button>
-      <button class="asset-btn" data-id="solana"                   data-sym="SOL"   data-src="cg"      onclick="selectAsset(this)">
+      <button class="asset-btn" data-id="solana" data-sym="SOL" onclick="selectAsset(this)">
         <span class="asset-sym">SOL</span><span class="asset-name">Solana</span>
-        <span class="asset-price" id="price-solana">…</span>
-        <span class="asset-change" id="change-solana"></span>
+        <span class="asset-price" id="price-solana">…</span><span class="asset-change" id="change-solana"></span>
       </button>
-      <button class="asset-btn" data-id="arbitrum"                 data-sym="ARB"   data-src="cg"      onclick="selectAsset(this)">
+      <button class="asset-btn" data-id="arbitrum" data-sym="ARB" onclick="selectAsset(this)">
         <span class="asset-sym">ARB</span><span class="asset-name">Arbitrum</span>
-        <span class="asset-price" id="price-arbitrum">…</span>
-        <span class="asset-change" id="change-arbitrum"></span>
+        <span class="asset-price" id="price-arbitrum">…</span><span class="asset-change" id="change-arbitrum"></span>
       </button>
-      <button class="asset-btn" data-id="binancecoin"              data-sym="BNB"   data-src="cg"      onclick="selectAsset(this)">
+      <button class="asset-btn" data-id="binancecoin" data-sym="BNB" onclick="selectAsset(this)">
         <span class="asset-sym">BNB</span><span class="asset-name">BNB Chain</span>
-        <span class="asset-price" id="price-binancecoin">…</span>
-        <span class="asset-change" id="change-binancecoin"></span>
+        <span class="asset-price" id="price-binancecoin">…</span><span class="asset-change" id="change-binancecoin"></span>
       </button>
-      <button class="asset-btn" data-id="hyperliquid"              data-sym="HYPE"  data-src="cg"      onclick="selectAsset(this)">
+      <button class="asset-btn" data-id="hyperliquid" data-sym="HYPE" onclick="selectAsset(this)">
         <span class="asset-sym">HYPE</span><span class="asset-name">Hyperliquid</span>
-        <span class="asset-price" id="price-hyperliquid">…</span>
-        <span class="asset-change" id="change-hyperliquid"></span>
+        <span class="asset-price" id="price-hyperliquid">…</span><span class="asset-change" id="change-hyperliquid"></span>
       </button>
-      <button class="asset-btn" data-id="near"                     data-sym="NEAR"  data-src="cg"      onclick="selectAsset(this)">
+      <button class="asset-btn" data-id="near" data-sym="NEAR" onclick="selectAsset(this)">
         <span class="asset-sym">NEAR</span><span class="asset-name">NEAR</span>
-        <span class="asset-price" id="price-near">…</span>
-        <span class="asset-change" id="change-near"></span>
+        <span class="asset-price" id="price-near">…</span><span class="asset-change" id="change-near"></span>
       </button>
-      <button class="asset-btn" data-id="kucoin-shares"            data-sym="KCS"   data-src="cg"      onclick="selectAsset(this)">
+      <button class="asset-btn" data-id="kucoin-shares" data-sym="KCS" onclick="selectAsset(this)">
         <span class="asset-sym">KCS</span><span class="asset-name">KuCoin Token</span>
-        <span class="asset-price" id="price-kucoin-shares">…</span>
-        <span class="asset-change" id="change-kucoin-shares"></span>
+        <span class="asset-price" id="price-kucoin-shares">…</span><span class="asset-change" id="change-kucoin-shares"></span>
       </button>
     </div>
 
-    <!-- RWA section -->
-    <div class="asset-section-label" style="margin-top:14px;">
-      <i class="ti ti-building-bank" aria-hidden="true"></i> Real-world assets
-    </div>
+    <div class="asset-section-label" style="margin-top:14px;"><i class="ti ti-building-bank" aria-hidden="true"></i> Real-world assets</div>
     <div class="asset-grid">
-      <button class="asset-btn" data-id="GOLD"   data-sym="GOLD"   data-src="metals"  onclick="selectAsset(this)">
+      <button class="asset-btn" data-id="GOLD" data-sym="GOLD" onclick="selectAsset(this)">
         <span class="asset-sym">GOLD</span><span class="asset-name">Gold (oz)</span>
-        <span class="asset-price" id="price-GOLD">…</span>
-        <span class="asset-change" id="change-GOLD"></span>
+        <span class="asset-price" id="price-GOLD">…</span><span class="asset-change" id="change-GOLD"></span>
       </button>
-      <button class="asset-btn" data-id="SILVER" data-sym="SILVER" data-src="metals"  onclick="selectAsset(this)">
+      <button class="asset-btn" data-id="SILVER" data-sym="SILVER" onclick="selectAsset(this)">
         <span class="asset-sym">SILVER</span><span class="asset-name">Silver (oz)</span>
-        <span class="asset-price" id="price-SILVER">…</span>
-        <span class="asset-change" id="change-SILVER"></span>
+        <span class="asset-price" id="price-SILVER">…</span><span class="asset-change" id="change-SILVER"></span>
       </button>
-      <button class="asset-btn" data-id="uso"                      data-sym="OIL"   data-src="cg"      onclick="selectAsset(this)">
+      <button class="asset-btn" data-id="uso" data-sym="OIL" onclick="selectAsset(this)">
         <span class="asset-sym">OIL</span><span class="asset-name">Oil (USO)</span>
-        <span class="asset-price" id="price-uso">…</span>
-        <span class="asset-change" id="change-uso"></span>
+        <span class="asset-price" id="price-uso">…</span><span class="asset-change" id="change-uso"></span>
       </button>
-      <button class="asset-btn" data-id="pax-gold"                 data-sym="PAXG"  data-src="cg"      onclick="selectAsset(this)">
+      <button class="asset-btn" data-id="pax-gold" data-sym="PAXG" onclick="selectAsset(this)">
         <span class="asset-sym">PAXG</span><span class="asset-name">PAX Gold</span>
-        <span class="asset-price" id="price-pax-gold">…</span>
-        <span class="asset-change" id="change-pax-gold"></span>
+        <span class="asset-price" id="price-pax-gold">…</span><span class="asset-change" id="change-pax-gold"></span>
       </button>
-      <button class="asset-btn" data-id="ondo-finance"             data-sym="ONDO"  data-src="cg"      onclick="selectAsset(this)">
+      <button class="asset-btn" data-id="ondo-finance" data-sym="ONDO" onclick="selectAsset(this)">
         <span class="asset-sym">ONDO</span><span class="asset-name">Ondo Finance</span>
-        <span class="asset-price" id="price-ondo-finance">…</span>
-        <span class="asset-change" id="change-ondo-finance"></span>
+        <span class="asset-price" id="price-ondo-finance">…</span><span class="asset-change" id="change-ondo-finance"></span>
       </button>
-      <button class="asset-btn" data-id="pendle"                   data-sym="PENDLE" data-src="cg"     onclick="selectAsset(this)">
+      <button class="asset-btn" data-id="pendle" data-sym="PENDLE" onclick="selectAsset(this)">
         <span class="asset-sym">PENDLE</span><span class="asset-name">Pendle</span>
-        <span class="asset-price" id="price-pendle">…</span>
-        <span class="asset-change" id="change-pendle"></span>
+        <span class="asset-price" id="price-pendle">…</span><span class="asset-change" id="change-pendle"></span>
       </button>
     </div>
 
@@ -591,16 +528,39 @@
     <div class="field-group" style="margin-bottom:14px;margin-top:14px;">
       <label class="field-label">Your call</label>
       <div class="dir-toggle">
-        <button class="dir-btn up" id="dirUp" onclick="selectDir(true)">
-          <i class="ti ti-trending-up" aria-hidden="true"></i> Going up
-        </button>
-        <button class="dir-btn down" id="dirDown" onclick="selectDir(false)">
-          <i class="ti ti-trending-down" aria-hidden="true"></i> Going down
-        </button>
+        <button class="dir-btn up" id="dirUp" onclick="selectDir(true)"><i class="ti ti-trending-up" aria-hidden="true"></i> Going up</button>
+        <button class="dir-btn down" id="dirDown" onclick="selectDir(false)"><i class="ti ti-trending-down" aria-hidden="true"></i> Going down</button>
       </div>
     </div>
-    <button class="btn" id="predBtn" onclick="doPrediction()" disabled>
+    <button class="btn" id="predBtn" onclick="doPrediction()">
       <i class="ti ti-send" aria-hidden="true"></i> Submit prediction
+    </button>
+  </div>
+
+  <!-- Quiz -->
+  <div class="card">
+    <div class="card-title">
+      <i class="ti ti-brain" aria-hidden="true"></i> Fhenix quiz <span class="level-pill">Medium</span>
+    </div>
+    <p class="card-desc">Five questions on FHE and Fhenix. Every correct answer earns 10 leaderboard points.</p>
+    <button class="btn primary" id="quizStartBtn" onclick="startQuiz()">
+      <i class="ti ti-player-play" aria-hidden="true"></i> Start quiz
+    </button>
+    <div class="quiz-meta" id="quizMeta"></div>
+  </div>
+
+  <!-- Leaderboard -->
+  <div class="card">
+    <div class="card-title">
+      <i class="ti ti-trophy" aria-hidden="true"></i> <span class="grow">Leaderboard</span>
+      <button class="icon-btn" style="width:30px;height:30px;font-size:14px;" onclick="loadLeaderboard(true)" title="Refresh leaderboard" aria-label="Refresh leaderboard">
+        <i class="ti ti-refresh" aria-hidden="true"></i>
+      </button>
+    </div>
+    <p class="card-desc">One ranking for everything: check-in and prediction XP plus quiz points.</p>
+    <div id="lbList"><div class="empty">Loading…</div></div>
+    <button class="btn sm" id="joinBtn" onclick="doJoin()" style="display:none;margin-top:12px;">
+      <i class="ti ti-user-plus" aria-hidden="true"></i> Join leaderboard
     </button>
   </div>
 
@@ -621,20 +581,20 @@
     <div id="paneResolve" style="display:none;">
       <p class="card-desc" style="margin-bottom:12px;">Anyone can resolve a prediction 24 h after it was made. Provide the actual closing price — the contract verifies direction and awards XP if correct.</p>
       <div class="field-group">
-        <label class="field-label">User address</label>
+        <label class="field-label" for="resolveUser">User address</label>
         <input type="text" id="resolveUser" placeholder="0x..." />
       </div>
       <div class="two-col">
         <div class="field-group">
-          <label class="field-label">Prediction index</label>
+          <label class="field-label" for="resolveIndex">Prediction index</label>
           <input type="number" id="resolveIndex" placeholder="0" min="0" />
         </div>
         <div class="field-group">
-          <label class="field-label">Actual price (USD)</label>
+          <label class="field-label" for="resolvePrice">Actual price (USD)</label>
           <input type="number" id="resolvePrice" placeholder="e.g. 67200" min="0" />
         </div>
       </div>
-      <button class="btn" id="resolveBtn" onclick="doResolve()" disabled>
+      <button class="btn" id="resolveBtn" onclick="doResolve()">
         <i class="ti ti-check" aria-hidden="true"></i> Resolve prediction
       </button>
     </div>
@@ -642,7 +602,7 @@
 
   <!-- Badges -->
   <div class="card">
-    <div class="card-title"><i class="ti ti-trophy" aria-hidden="true"></i> Badge collection</div>
+    <div class="card-title"><i class="ti ti-medal-2" aria-hidden="true"></i> Badge collection</div>
     <div class="badge-row" id="badgeRow">
       <div style="font-size:13px;color:var(--text2);">Connect wallet to see your badges.</div>
     </div>
@@ -653,10 +613,8 @@
     <div class="card-title"><i class="ti ti-search" aria-hidden="true"></i> Look up any address</div>
     <p class="card-desc">All stats except mood are fully public — look up anyone's streak and XP.</p>
     <div style="display:flex;gap:8px;">
-      <input type="text" id="lookupAddr" placeholder="0x..." style="flex:1;" />
-      <button class="btn sm" onclick="doLookup()">
-        <i class="ti ti-search" aria-hidden="true"></i> Look up
-      </button>
+      <input type="text" id="lookupAddr" placeholder="0x..." style="flex:1;" aria-label="Address to look up" />
+      <button class="btn sm" onclick="doLookup()"><i class="ti ti-search" aria-hidden="true"></i> Look up</button>
     </div>
     <div id="lookupResult"></div>
   </div>
@@ -672,10 +630,48 @@
 
 </div><!-- page-inner -->
 </div><!-- page -->
-<div class="toast" id="toast"></div>
+
+<!-- Wallet picker -->
+<div class="modal-backdrop" id="walletModal" role="dialog" aria-modal="true" aria-labelledby="walletTitle">
+  <div class="modal">
+    <div class="modal-head">
+      <h2 id="walletTitle"><i class="ti ti-wallet" aria-hidden="true"></i> Connect a wallet</h2>
+      <button class="icon-btn" onclick="closeWalletModal(false)" aria-label="Close"><i class="ti ti-x" aria-hidden="true"></i></button>
+    </div>
+    <div id="walletList"></div>
+  </div>
+</div>
+
+<!-- Quiz -->
+<div class="modal-backdrop" id="quizModal" role="dialog" aria-modal="true" aria-labelledby="quizTitle">
+  <div class="modal">
+    <div class="modal-head">
+      <h2 id="quizTitle"><i class="ti ti-brain" aria-hidden="true"></i> Fhenix quiz <span class="level-pill">Medium</span></h2>
+      <button class="icon-btn" onclick="closeQuiz()" aria-label="Close quiz"><i class="ti ti-x" aria-hidden="true"></i></button>
+    </div>
+    <div id="quizBody"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
+  /* ═══════════════ Config ═══════════════ */
   const CA = "0x9E0162C3ec47F49613Fa2056a6a1D74E13cd08d2";
+
+  // Paste the address of your deployed FhenixLeaderboard contract here.
+  // Leave empty and the quiz still works in practice mode, but scores and the leaderboard can't be saved on-chain.
+  const LB_CA = "0x650E77E35751E851F5e5bC7BB539D1539A0Bcc01";
+
+  const CHAIN = {
+    id: 421614,
+    hex: '0x66eee',
+    name: 'Arbitrum Sepolia',
+    rpc: 'https://sepolia-rollup.arbitrum.io/rpc',
+    explorer: 'https://sepolia.arbiscan.io',
+    currency: { name: 'Ether', symbol: 'ETH', decimals: 18 }
+  };
+
   const ABI = [
     "function checkIn(tuple(bytes data, bytes32 hash) _encryptedMood) external",
     "function makePrediction(string _asset, bool _predictedUp, uint256 _currentPrice) external",
@@ -688,11 +684,386 @@
     "function totalCheckIns() external view returns (uint256)"
   ];
 
-  let provider, signer, contract, userAddr = null;
+  const LB_ABI = [
+    "function join() external",
+    "function submitQuiz(uint8 correct, uint8 total) external",
+    "function playerCount() external view returns (uint256)",
+    "function getPlayers(uint256 offset, uint256 limit) external view returns (address[] addrs, uint32[] xp, uint32[] pts, uint32[] rounds)",
+    "function getPlayer(address user) external view returns (bool joined, uint32 quizPoints, uint32 quizRounds, uint8 roundsLeft)"
+  ];
+
+  /* ═══════════════ Helpers ═══════════════ */
+  const $ = id => document.getElementById(id);
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+  const short = a => a.slice(0, 6) + '...' + a.slice(-4);
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const lsGet = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+  const lsSet = (k, v) => { try { v === null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch (e) {} };
+  const spinner = '<i class="ti ti-loader-2 spin" aria-hidden="true"></i>';
+
+  /* ═══════════════ State ═══════════════ */
+  // Reads always go through the public RPC so they work even if the wallet is on another network.
+  const rpc = new ethers.providers.StaticJsonRpcProvider(CHAIN.rpc, { chainId: CHAIN.id, name: 'arbitrum-sepolia' });
+  const ritualR = new ethers.Contract(CA, ABI, rpc);
+  const lbR = LB_CA ? new ethers.Contract(LB_CA, LB_ABI, rpc) : null;
+
+  let provider = null, signer = null, ritualW = null, lbW = null;
+  let userAddr = null, activeRaw = null, activeWallet = null, rawHandlers = null;
   let selectedMood = null, predDir = null;
   let selectedAssetId = 'bitcoin', selectedAssetSym = 'BTC';
   let livePrices = {};
+  let checkedInToday = false;
+  let lbJoined = false, roundsLeft = null, quizPts = 0;
 
+  /* ═══════════════ Toast ═══════════════ */
+  let toastTimer;
+  function toast(msg, dur = 3500, href) {
+    const el = $('toast');
+    el.textContent = '';
+    el.classList.toggle('link', !!href);
+    if (href) {
+      const a = document.createElement('a');
+      a.href = href; a.target = '_blank'; a.rel = 'noopener';
+      a.style.color = 'inherit';
+      a.textContent = msg + ' ↗';
+      el.appendChild(a);
+    } else {
+      el.textContent = msg;
+    }
+    el.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove('show'), dur);
+  }
+
+  function copyCA() {
+    navigator.clipboard.writeText(CA).then(() => toast('Contract address copied'));
+  }
+
+  /* ═══════════════ Theme ═══════════════ */
+  function applyTheme(dark) {
+    document.body.classList.toggle('theme-dark', dark);
+    $('themeIcon').className = dark ? 'ti ti-sun' : 'ti ti-moon';
+    lsSet('dr-theme', dark ? 'dark' : 'light');
+  }
+  function toggleTheme() { applyTheme(!document.body.classList.contains('theme-dark')); }
+  applyTheme(lsGet('dr-theme') === 'dark'); // bright by default
+
+  /* ═══════════════ Wallets (EIP-6963 multi-wallet) ═══════════════ */
+  const found = new Map();
+  window.addEventListener('eip6963:announceProvider', ev => {
+    const d = ev.detail;
+    if (!d || !d.info || !d.provider) return;
+    found.set(d.info.uuid || d.info.rdns || d.info.name, d);
+    if ($('walletModal').classList.contains('open')) renderWallets();
+  });
+  window.dispatchEvent(new Event('eip6963:requestProvider'));
+
+  function guessName(p) {
+    if (p.isRabby) return 'Rabby';
+    if (p.isOkxWallet || p.isOKExWallet) return 'OKX Wallet';
+    if (p.isCoinbaseWallet) return 'Coinbase Wallet';
+    if (p.isTrust || p.isTrustWallet) return 'Trust Wallet';
+    if (p.isPhantom) return 'Phantom';
+    if (p.isMetaMask) return 'MetaMask';
+    return 'Browser wallet';
+  }
+
+  function getWallets() {
+    const list = [...found.values()].map(d => ({
+      name: d.info.name, icon: d.info.icon || null, rdns: d.info.rdns || d.info.name, provider: d.provider
+    }));
+    if (!list.length && window.ethereum) {
+      const eth = window.ethereum;
+      const arr = Array.isArray(eth.providers) && eth.providers.length ? eth.providers : [eth];
+      arr.forEach(p => list.push({ name: guessName(p), icon: null, rdns: 'legacy:' + guessName(p), provider: p }));
+    }
+    return list;
+  }
+
+  function walletIcon(w) {
+    if (w.icon && /^data:image\//.test(w.icon)) {
+      const img = document.createElement('img');
+      img.src = w.icon; img.alt = '';
+      return img;
+    }
+    const d = document.createElement('span');
+    d.className = 'wallet-ico';
+    d.innerHTML = '<i class="ti ti-wallet" aria-hidden="true"></i>';
+    return d;
+  }
+
+  function renderWallets() {
+    const box = $('walletList');
+    box.textContent = '';
+    const wallets = getWallets();
+
+    if (wallets.length) {
+      wallets.forEach(w => {
+        const b = document.createElement('button');
+        b.className = 'wallet-item';
+        b.appendChild(walletIcon(w));
+        const s = document.createElement('span');
+        s.textContent = w.name;
+        b.appendChild(s);
+        b.onclick = () => connectWallet(w);
+        box.appendChild(b);
+      });
+      const hint = document.createElement('div');
+      hint.className = 'wallet-sub';
+      hint.textContent = 'Any browser wallet that supports EVM chains will show up here.';
+      box.appendChild(hint);
+      return;
+    }
+
+    // No injected wallet: offer wallet-app deep links (mobile) and install links (desktop).
+    const msg = document.createElement('div');
+    msg.className = 'notice';
+    msg.textContent = 'No wallet detected in this browser. Open this page inside a wallet app, or install a wallet extension.';
+    box.appendChild(msg);
+
+    const url = location.href;
+    const apps = [
+      { name: 'MetaMask', href: 'https://metamask.app.link/dapp/' + location.host + location.pathname + location.search },
+      { name: 'Trust Wallet', href: 'https://link.trustwallet.com/open_url?coin_id=60&url=' + encodeURIComponent(url) },
+      { name: 'Coinbase Wallet', href: 'https://go.cb-w.com/dapp?cb_url=' + encodeURIComponent(url) },
+      { name: 'OKX Wallet', href: 'okx://wallet/dapp/url?dappUrl=' + encodeURIComponent(url) }
+    ];
+    const l1 = document.createElement('div');
+    l1.className = 'wallet-sub';
+    l1.textContent = 'Open in a wallet app';
+    box.appendChild(l1);
+    apps.forEach(a => {
+      const el = document.createElement('a');
+      el.className = 'wallet-item';
+      el.href = a.href;
+      const ico = document.createElement('span');
+      ico.className = 'wallet-ico';
+      ico.innerHTML = '<i class="ti ti-device-mobile" aria-hidden="true"></i>';
+      const s = document.createElement('span');
+      s.textContent = a.name;
+      el.appendChild(ico); el.appendChild(s);
+      box.appendChild(el);
+    });
+
+    const l2 = document.createElement('div');
+    l2.className = 'wallet-sub';
+    l2.textContent = 'Or install a browser wallet';
+    box.appendChild(l2);
+    [
+      { name: 'MetaMask', href: 'https://metamask.io/download/' },
+      { name: 'Rabby', href: 'https://rabby.io/' },
+      { name: 'Coinbase Wallet', href: 'https://www.coinbase.com/wallet/downloads' }
+    ].forEach(a => {
+      const el = document.createElement('a');
+      el.className = 'wallet-item';
+      el.href = a.href; el.target = '_blank'; el.rel = 'noopener';
+      const ico = document.createElement('span');
+      ico.className = 'wallet-ico';
+      ico.innerHTML = '<i class="ti ti-download" aria-hidden="true"></i>';
+      const s = document.createElement('span');
+      s.textContent = a.name;
+      el.appendChild(ico); el.appendChild(s);
+      box.appendChild(el);
+    });
+  }
+
+  let walletResolve = null;
+  function openWalletModal() {
+    window.dispatchEvent(new Event('eip6963:requestProvider'));
+    renderWallets();
+    $('walletModal').classList.add('open');
+  }
+  function closeWalletModal(result) {
+    $('walletModal').classList.remove('open');
+    if (walletResolve) { walletResolve(!!result); walletResolve = null; }
+  }
+  // Resolves true once a wallet is connected. Opens the picker if needed.
+  function requireWallet() {
+    if (userAddr) return Promise.resolve(true);
+    return new Promise(res => { walletResolve = res; openWalletModal(); });
+  }
+  $('walletModal').addEventListener('click', e => { if (e.target.id === 'walletModal') closeWalletModal(false); });
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Escape') return;
+    if ($('walletModal').classList.contains('open')) closeWalletModal(false);
+    else if ($('quizModal').classList.contains('open')) closeQuiz();
+  });
+
+  function onConnectClick() {
+    if (userAddr) {
+      navigator.clipboard.writeText(userAddr).then(() => toast('Address copied'));
+    } else {
+      requireWallet();
+    }
+  }
+
+  async function connectWallet(w, silent = false) {
+    try {
+      const raw = w.provider;
+      const accounts = await raw.request({ method: silent ? 'eth_accounts' : 'eth_requestAccounts' });
+      if (!accounts || !accounts.length) {
+        if (silent) return false;
+        throw new Error('No account returned by the wallet');
+      }
+      detachListeners();
+      activeRaw = raw; activeWallet = w;
+      provider = new ethers.providers.Web3Provider(raw, 'any');
+      signer = provider.getSigner(accounts[0]);
+      userAddr = ethers.utils.getAddress(accounts[0]);
+      ritualW = new ethers.Contract(CA, ABI, signer);
+      lbW = LB_CA ? new ethers.Contract(LB_CA, LB_ABI, signer) : null;
+      attachListeners(raw);
+      lsSet('dr-wallet', w.rdns);
+      updateWalletUI();
+      if (!silent) { closeWalletModal(true); toast('Connected with ' + w.name); }
+      refreshAll();
+      return true;
+    } catch (e) {
+      if (!silent) toast(friendlyError(e));
+      return false;
+    }
+  }
+
+  function attachListeners(raw) {
+    if (!raw.on) return;
+    const onAccounts = accs => {
+      if (!accs || !accs.length) { disconnectWallet(true); return; }
+      let next; try { next = ethers.utils.getAddress(accs[0]); } catch (e) { return; }
+      if (next !== userAddr) connectWallet(activeWallet, true);
+    };
+    raw.on('accountsChanged', onAccounts);
+    rawHandlers = { onAccounts };
+  }
+  function detachListeners() {
+    if (activeRaw && rawHandlers && activeRaw.removeListener) {
+      try { activeRaw.removeListener('accountsChanged', rawHandlers.onAccounts); } catch (e) {}
+    }
+    rawHandlers = null;
+  }
+
+  function updateWalletUI() {
+    const btn = $('connectBtn');
+    const on = !!userAddr;
+    btn.classList.toggle('connected', on);
+    $('connectLabel').textContent = on ? short(userAddr) : 'Connect wallet';
+    $('disconnectBtn').style.display = on ? 'flex' : 'none';
+    const ico = $('connectIcon');
+    if (on && activeWallet && activeWallet.icon && /^data:image\//.test(activeWallet.icon)) {
+      const img = document.createElement('img');
+      img.src = activeWallet.icon; img.alt = ''; img.id = 'connectIcon';
+      ico.replaceWith(img);
+    } else if (!on && ico.tagName === 'IMG') {
+      const i = document.createElement('i');
+      i.className = 'ti ti-wallet'; i.id = 'connectIcon'; i.setAttribute('aria-hidden', 'true');
+      ico.replaceWith(i);
+    }
+  }
+
+  async function disconnectWallet(soft) {
+    const raw = activeRaw;
+    detachListeners();
+    userAddr = null; provider = null; signer = null; ritualW = null; lbW = null;
+    activeRaw = null; activeWallet = null;
+    checkedInToday = false; lbJoined = false; roundsLeft = null; quizPts = 0;
+    if (soft !== true) {
+      lsSet('dr-wallet', null);
+      // Ask the wallet to revoke site access where supported (e.g. MetaMask). Ignored elsewhere.
+      if (raw && raw.request) { try { await raw.request({ method: 'wallet_revokePermissions', params: [{ eth_accounts: {} }] }); } catch (e) {} }
+    }
+    updateWalletUI();
+    $('statStreak').textContent = '—';
+    $('statXp').textContent = '—';
+    $('statBadge').textContent = '—';
+    $('statBadgeSub').textContent = '—';
+    $('statLongest').textContent = 'Longest: —';
+    $('xpBar').style.width = '0%';
+    $('predList').innerHTML = '<div style="font-size:13px;color:var(--text2);">Connect your wallet to see predictions.</div>';
+    $('badgeRow').innerHTML = '<div style="font-size:13px;color:var(--text2);">Connect wallet to see your badges.</div>';
+    updateCheckinBtn();
+    loadQuizStatus();
+    loadLeaderboard();
+    toast('Wallet disconnected');
+  }
+
+  // Reconnect quietly (no popup) to the wallet used last time.
+  setTimeout(async () => {
+    const saved = lsGet('dr-wallet');
+    if (!saved || userAddr) return;
+    const w = getWallets().find(x => x.rdns === saved);
+    if (w) await connectWallet(w, true);
+  }, 500);
+
+  /* ═══════════════ Seamless transactions ═══════════════ */
+  async function ensureNetwork() {
+    const raw = activeRaw;
+    const cur = await raw.request({ method: 'eth_chainId' });
+    if (parseInt(cur, 16) === CHAIN.id) return;
+    try {
+      await raw.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: CHAIN.hex }] });
+    } catch (e) {
+      const notAdded = e && (e.code === 4902 || e.code === -32603 || /unrecognized chain|not been added|not added/i.test(e.message || ''));
+      if (!notAdded) throw e;
+      await raw.request({
+        method: 'wallet_addEthereumChain',
+        params: [{
+          chainId: CHAIN.hex, chainName: CHAIN.name, nativeCurrency: CHAIN.currency,
+          rpcUrls: [CHAIN.rpc], blockExplorerUrls: [CHAIN.explorer]
+        }]
+      });
+    }
+  }
+
+  function friendlyError(e) {
+    const code = e && (e.code || (e.error && e.error.code));
+    if (code === 4001 || code === 'ACTION_REJECTED') return 'Cancelled in your wallet';
+    const msg = String((e && (e.reason || (e.error && e.error.message) || (e.data && e.data.message) || e.message)) || e);
+    if (/insufficient funds/i.test(msg)) return 'Not enough Arbitrum Sepolia ETH for gas';
+    if (/already checked|already joined/i.test(msg)) return msg.replace(/^.*?(already[^"']*).*$/i, '$1');
+    return msg.length > 140 ? msg.slice(0, 140) + '…' : msg;
+  }
+
+  // Estimate gas first (surfaces reverts before the wallet popup), add a safety buffer, then send.
+  async function callWithBuffer(contract, method, args) {
+    const est = await contract.estimateGas[method](...args);
+    const overrides = { gasLimit: est.mul(125).div(100) };
+    try {
+      // Give the fee 2x headroom over the current gas price so a rising base fee can't reject the transaction.
+      const fd = await rpc.getFeeData();
+      if (fd.gasPrice) {
+        const cap = fd.gasPrice.mul(2);
+        overrides.maxFeePerGas = fd.maxFeePerGas && fd.maxFeePerGas.gt(cap) ? fd.maxFeePerGas : cap;
+        overrides.maxPriorityFeePerGas = ethers.constants.Zero;
+      }
+    } catch (e) { /* fall back to the wallet's own fee estimate */ }
+    return contract[method](...args, overrides);
+  }
+
+  // One entry point for every write: connect if needed → right network → send → confirm → toast.
+  async function sendTx(label, build) {
+    if (!userAddr) {
+      const ok = await requireWallet();
+      if (!ok) return null;
+    }
+    try {
+      await ensureNetwork();
+      toast('Confirm “' + label + '” in your wallet…', 20000);
+      const tx = await build();
+      toast('Sent — confirming…', 15000, CHAIN.explorer + '/tx/' + tx.hash);
+      const rc = await tx.wait();
+      toast(label + ' confirmed ✓', 4000, CHAIN.explorer + '/tx/' + tx.hash);
+      return rc;
+    } catch (e) {
+      console.error(label, e);
+      toast(friendlyError(e), 6000);
+      return null;
+    }
+  }
+
+  async function refreshAll() {
+    await Promise.allSettled([loadStats(), loadPredictions(), loadGlobal(), loadLeaderboard(), loadQuizStatus()]);
+  }
+
+  /* ═══════════════ Live prices ═══════════════ */
   const CG_IDS = 'bitcoin,ethereum,solana,arbitrum,binancecoin,hyperliquid,near,kucoin-shares,uso,pax-gold,ondo-finance,pendle';
 
   async function fetchCoinGeckoPrices() {
@@ -704,8 +1075,7 @@
       const p = data[id];
       if (!p) continue;
       livePrices[id] = p.usd;
-      const priceEl = document.getElementById('price-' + id);
-      const changeEl = document.getElementById('change-' + id);
+      const priceEl = $('price-' + id), changeEl = $('change-' + id);
       if (priceEl) priceEl.textContent = '$' + p.usd.toLocaleString(undefined, { maximumFractionDigits: p.usd < 1 ? 4 : 2 });
       if (changeEl && p.usd_24h_change != null) {
         const c = p.usd_24h_change;
@@ -724,9 +1094,9 @@
       const key = map[item.metal];
       if (!key) continue;
       livePrices[key] = item.price;
-      const priceEl = document.getElementById('price-' + key);
+      const priceEl = $('price-' + key);
       if (priceEl) priceEl.textContent = '$' + item.price.toLocaleString(undefined, { maximumFractionDigits: 2 });
-      const changeEl = document.getElementById('change-' + key);
+      const changeEl = $('change-' + key);
       if (changeEl && item.change != null) {
         const c = item.change;
         changeEl.textContent = (c >= 0 ? '+' : '') + c.toFixed(2) + '%';
@@ -736,14 +1106,18 @@
   }
 
   async function fetchPrices() {
-    try {
-      await Promise.allSettled([fetchCoinGeckoPrices(), fetchMetalsPrices()]);
-      const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      document.getElementById('priceStatusText').textContent = 'Live · updated ' + now;
-      document.getElementById('priceRefreshIcon').className = 'ti ti-circle-check';
-    } catch (e) {
-      document.getElementById('priceStatusText').textContent = 'Some prices unavailable — retry in a moment';
-      document.getElementById('priceRefreshIcon').className = 'ti ti-alert-circle';
+    const results = await Promise.allSettled([fetchCoinGeckoPrices(), fetchMetalsPrices()]);
+    const ok = results.filter(r => r.status === 'fulfilled').length;
+    const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    if (ok === results.length) {
+      $('priceStatusText').textContent = 'Live · updated ' + now;
+      $('priceRefreshIcon').className = 'ti ti-circle-check';
+    } else if (ok > 0) {
+      $('priceStatusText').textContent = 'Some prices unavailable · updated ' + now;
+      $('priceRefreshIcon').className = 'ti ti-alert-circle';
+    } else {
+      $('priceStatusText').textContent = 'Prices unavailable — retrying shortly';
+      $('priceRefreshIcon').className = 'ti ti-alert-circle';
     }
   }
 
@@ -754,273 +1128,179 @@
     selectedAssetSym = btn.dataset.sym;
   }
 
-  /* ── Toast ── */
-  let toastTimer;
-  function toast(msg, dur = 3500) {
-    const el = document.getElementById('toast');
-    el.textContent = msg;
-    el.classList.add('show');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => el.classList.remove('show'), dur);
-  }
-
-  /* ── Copy CA ── */
-  function copyCA() {
-    navigator.clipboard.writeText(CA).then(() => toast('Contract address copied to clipboard'));
-  }
-
-  /* ── Mood ── */
+  /* ═══════════════ Mood / direction ═══════════════ */
   function selectMood(v) {
     selectedMood = v;
     document.querySelectorAll('.mood-btn').forEach((b, i) => b.classList.toggle('selected', i + 1 === v));
     updateCheckinBtn();
   }
-
-  /* ── Direction ── */
   function selectDir(up) {
     predDir = up;
-    document.getElementById('dirUp').classList.toggle('sel', up === true);
-    document.getElementById('dirDown').classList.toggle('sel', up === false);
+    $('dirUp').classList.toggle('sel', up === true);
+    $('dirDown').classList.toggle('sel', up === false);
   }
-
-  /* ── Check-in button state ── */
   function updateCheckinBtn() {
-    document.getElementById('checkinBtn').disabled = !(userAddr && selectedMood);
-  }
-
-  /* ── Connect wallet ── */
-  async function connectWallet() {
-    if (!window.ethereum) {
-      toast('No wallet detected. Install MetaMask or a compatible wallet.');
+    const btn = $('checkinBtn');
+    if (userAddr && checkedInToday) {
+      btn.disabled = true;
+      btn.innerHTML = '<i class="ti ti-check" aria-hidden="true"></i> Checked in today';
+      $('checkinStatus').textContent = 'Come back tomorrow to keep your streak going.';
       return;
     }
-    try {
-      provider = new ethers.providers.Web3Provider(window.ethereum);
-      await provider.send("eth_requestAccounts", []);
-      signer = provider.getSigner();
-      userAddr = await signer.getAddress();
-      contract = new ethers.Contract(CA, ABI, signer);
-
-      const btn = document.getElementById('connectBtn');
-      btn.classList.add('connected');
-      document.getElementById('connectLabel').textContent = userAddr.slice(0, 6) + '...' + userAddr.slice(-4);
-      document.getElementById('disconnectBtn').style.display = 'flex';
-
-      document.getElementById('predBtn').disabled = false;
-      document.getElementById('resolveBtn').disabled = false;
-      updateCheckinBtn();
-
-      await loadStats();
-      await loadPredictions();
-      await loadGlobal();
-
-      window.ethereum.on('accountsChanged', () => location.reload());
-      window.ethereum.on('chainChanged', () => location.reload());
-    } catch (e) {
-      toast('Connection failed: ' + (e.message || e));
-    }
+    btn.disabled = !selectedMood;
+    btn.innerHTML = '<i class="ti ti-check" aria-hidden="true"></i> Check in for today';
+    $('checkinStatus').textContent = '';
   }
 
-  /* ── Load user stats ── */
+  /* ═══════════════ Load data ═══════════════ */
   async function loadStats() {
-    if (!contract || !userAddr) return;
+    if (!userAddr) return;
     try {
-      const raw = await contract.getUserStats(userAddr);
-      const streak  = Number(raw[1]);
-      const longest = Number(raw[2]);
-      const xp      = Number(raw[3]);
-      const badge   = Number(raw[4]);
-      document.getElementById('statStreak').textContent = streak;
-      document.getElementById('statLongest').textContent = 'Longest: ' + longest;
-      document.getElementById('statXp').textContent = xp;
-      document.getElementById('xpBar').style.width = Math.min(xp % 100, 100) + '%';
-      document.getElementById('statBadge').textContent = badge > 0 ? 'Tier ' + badge : 'None';
-      document.getElementById('statBadgeSub').textContent = badge > 0 ? (badge * 7) + '-day badge' : 'Earn at 7-day streak';
+      const raw = await ritualR.getUserStats(userAddr);
+      const streak = Number(raw[1]), longest = Number(raw[2]), xp = Number(raw[3]), badge = Number(raw[4]);
+      $('statStreak').textContent = streak;
+      $('statLongest').textContent = 'Longest: ' + longest;
+      $('statXp').textContent = xp;
+      $('xpBar').style.width = Math.min(xp % 100, 100) + '%';
+      $('statBadge').textContent = badge > 0 ? 'Tier ' + badge : 'None';
+      $('statBadgeSub').textContent = badge > 0 ? (badge * 7) + '-day badge' : 'Earn at 7-day streak';
       renderBadges(badge);
-      const checkedIn = await contract.isCheckedInToday(userAddr);
-      if (checkedIn) {
-        const btn = document.getElementById('checkinBtn');
-        btn.disabled = true;
-        btn.innerHTML = '<i class="ti ti-check" aria-hidden="true"></i> Checked in today';
-        document.getElementById('checkinStatus').textContent = 'Come back tomorrow to keep your streak going.';
-      }
+      checkedInToday = await ritualR.isCheckedInToday(userAddr);
+      updateCheckinBtn();
     } catch (e) {
       console.error('loadStats error:', e);
-      toast('Could not load your stats. Make sure you are on Arbitrum Sepolia.');
+      toast('Could not load your stats — try again in a moment');
     }
   }
 
-  /* ── Load global counters ── */
   async function loadGlobal() {
     try {
-      const p = provider || new ethers.providers.JsonRpcProvider('https://sepolia-rollup.arbitrum.io/rpc');
-      const ro = new ethers.Contract(CA, ABI, p);
-      const [tu, tc] = await Promise.all([ro.totalUsers(), ro.totalCheckIns()]);
-      document.getElementById('statUsers').textContent = Number(tu);
-      document.getElementById('statCheckIns').textContent = 'check-ins: ' + Number(tc);
-    } catch (e) {
-      console.error('loadGlobal error:', e);
-    }
+      const [tu, tc] = await Promise.all([ritualR.totalUsers(), ritualR.totalCheckIns()]);
+      $('statUsers').textContent = Number(tu);
+      $('statCheckIns').textContent = 'check-ins: ' + Number(tc);
+    } catch (e) { console.error('loadGlobal error:', e); }
   }
 
-  /* ── Load predictions ── */
   async function loadPredictions() {
-    if (!contract || !userAddr) return;
+    if (!userAddr) return;
     try {
-      const count = (await contract.getPredictionCount(userAddr)).toNumber();
-      const list = document.getElementById('predList');
+      const count = (await ritualR.getPredictionCount(userAddr)).toNumber();
+      const list = $('predList');
       if (count === 0) {
         list.innerHTML = '<div style="font-size:13px;color:var(--text2);">No predictions yet. Submit your first above.</div>';
         return;
       }
-      let html = '';
       const start = Math.max(0, count - 8);
-      for (let i = count - 1; i >= start; i--) {
-        const [asset, up, price, , resolved, correct] = await contract.getPrediction(userAddr, i);
-        const pStr = '$' + Number(price / 100).toLocaleString(undefined, { maximumFractionDigits: 2 });
-        let statusHtml = '<span class="pred-status">Pending</span>';
-        if (resolved) {
-          statusHtml = correct
-            ? '<span class="pred-status correct">✓ Correct +15 XP</span>'
-            : '<span class="pred-status wrong">✗ Wrong</span>';
-        }
-        html += `<div class="pred-item">
-          <span class="pred-asset">${asset}</span>
+      const idx = [];
+      for (let i = count - 1; i >= start; i--) idx.push(i);
+      const rows = await Promise.all(idx.map(i => ritualR.getPrediction(userAddr, i)));
+      list.innerHTML = rows.map((r, n) => {
+        const [asset, up, price, , resolved, correct] = r;
+        const pStr = '$' + (price.toNumber() / 100).toLocaleString(undefined, { maximumFractionDigits: 2 });
+        let status = '<span class="pred-status">Pending · #' + idx[n] + '</span>';
+        if (resolved) status = correct
+          ? '<span class="pred-status correct">✓ Correct +15 XP</span>'
+          : '<span class="pred-status wrong">✗ Wrong</span>';
+        return `<div class="pred-item">
+          <span class="pred-asset">${esc(asset)}</span>
           <span class="pill ${up ? 'up' : 'down'}">${up ? '↑ Up' : '↓ Down'}</span>
           <span class="pred-price">${pStr}</span>
-          ${statusHtml}
+          ${status}
         </div>`;
-      }
-      list.innerHTML = html;
-    } catch (e) {
-      console.error('loadPredictions error:', e);
-    }
+      }).join('');
+    } catch (e) { console.error('loadPredictions error:', e); }
   }
 
-  /* ── Render badges ── */
   function renderBadges(highest) {
-    const row = document.getElementById('badgeRow');
+    const row = $('badgeRow');
     if (highest === 0) {
       row.innerHTML = '<div style="font-size:13px;color:var(--text2);">No badges yet. Reach a 7-day streak to earn your first.</div>';
       return;
     }
     const tiers = [
-      { days: 7,  icon: 'ti-star',     label: '7 days'  },
-      { days: 14, icon: 'ti-flame',    label: '14 days' },
-      { days: 21, icon: 'ti-crown',    label: '21 days' },
-      { days: 28, icon: 'ti-diamond',  label: '28 days' },
-      { days: 35, icon: 'ti-trophy',   label: '35 days' },
-      { days: 42, icon: 'ti-rocket',   label: '42 days' },
-      { days: 49, icon: 'ti-hexagon',  label: '49 days' },
-      { days: 56, icon: 'ti-infinity', label: '56 days' },
+      { icon: 'ti-star', label: '7 days' }, { icon: 'ti-flame', label: '14 days' },
+      { icon: 'ti-crown', label: '21 days' }, { icon: 'ti-diamond', label: '28 days' },
+      { icon: 'ti-trophy', label: '35 days' }, { icon: 'ti-rocket', label: '42 days' },
+      { icon: 'ti-hexagon', label: '49 days' }, { icon: 'ti-infinity', label: '56 days' }
     ];
-    row.innerHTML = tiers.map((t, i) => {
-      const earned = (i + 1) <= highest;
-      return `<div class="badge ${earned ? 'earned' : ''}"><i class="ti ${t.icon}" aria-hidden="true"></i>${t.label}</div>`;
-    }).join('');
+    row.innerHTML = tiers.map((t, i) =>
+      `<div class="badge ${(i + 1) <= highest ? 'earned' : ''}"><i class="ti ${t.icon}" aria-hidden="true"></i>${t.label}</div>`
+    ).join('');
   }
 
-  /* ── Check-in ── */
+  /* ═══════════════ Actions ═══════════════ */
   async function doCheckIn() {
-    if (!contract || !selectedMood) return;
-    const btn = document.getElementById('checkinBtn');
+    if (!selectedMood) { toast('Pick your mood first'); return; }
+    const btn = $('checkinBtn');
     btn.disabled = true;
-    btn.innerHTML = '<i class="ti ti-loader" aria-hidden="true"></i> Sending…';
+    btn.innerHTML = spinner + ' Waiting for wallet…';
 
-    try {
-      // NOTE: Replace this stub with Fhenix SDK encryption in production:
-      // import { FhenixClient } from "@fhenixprotocol/fhenixjs";
-      // const fhenix = new FhenixClient({ provider });
-      // const encryptedMood = await fhenix.encrypt_uint8(selectedMood);
-      const encryptedMood = {
-        data: ethers.utils.hexlify(ethers.utils.toUtf8Bytes(String(selectedMood))),
-        hash: ethers.constants.HashZero
-      };
+    // NOTE: Replace this stub with Fhenix SDK encryption before going live:
+    // const encryptedMood = await cofhejs.encrypt(...)  (see the Fhenix docs for the current client SDK)
+    const encryptedMood = {
+      data: ethers.utils.hexlify(ethers.utils.toUtf8Bytes(String(selectedMood))),
+      hash: ethers.constants.HashZero
+    };
 
-      toast('Confirm the transaction in your wallet…', 8000);
-      const tx = await contract.checkIn(encryptedMood);
-      toast('Transaction submitted — waiting for confirmation…', 8000);
-      await tx.wait();
-      toast('Checked in! Streak updated.');
-      document.getElementById('checkinStatus').textContent = '';
-      await loadStats();
-    } catch (e) {
-      btn.disabled = false;
-      btn.innerHTML = '<i class="ti ti-check" aria-hidden="true"></i> Check in for today';
-      updateCheckinBtn();
-      toast('Transaction failed: ' + (e.reason || e.message));
+    const rc = await sendTx('Check-in', () => callWithBuffer(ritualW, 'checkIn', [encryptedMood]));
+    if (rc) {
+      checkedInToday = true;
+      await sleep(700);
+      await Promise.allSettled([loadStats(), loadGlobal(), loadLeaderboard()]);
     }
+    updateCheckinBtn();
   }
 
-  /* ── Submit prediction ── */
   async function doPrediction() {
-    if (!contract) return;
     if (predDir === null) { toast('Pick a direction — up or down'); return; }
-
-    const asset = selectedAssetSym;
     const rawPrice = livePrices[selectedAssetId] || livePrices[selectedAssetSym];
     if (!rawPrice) { toast('Price not loaded yet — wait a moment and try again'); return; }
     const priceCents = Math.round(rawPrice * 100);
-    const btn = document.getElementById('predBtn');
+    const btn = $('predBtn');
     btn.disabled = true;
-    btn.innerHTML = '<i class="ti ti-loader" aria-hidden="true"></i> Sending…';
-    try {
-      toast('Confirm the transaction in your wallet…', 8000);
-      const tx = await contract.makePrediction(asset, predDir, priceCents);
-      await tx.wait();
-      toast('Prediction submitted!');
+    btn.innerHTML = spinner + ' Waiting for wallet…';
+    const rc = await sendTx('Prediction', () => callWithBuffer(ritualW, 'makePrediction', [selectedAssetSym, predDir, priceCents]));
+    if (rc) {
       predDir = null;
-      document.getElementById('dirUp').classList.remove('sel');
-      document.getElementById('dirDown').classList.remove('sel');
+      $('dirUp').classList.remove('sel');
+      $('dirDown').classList.remove('sel');
+      await sleep(700);
       await loadPredictions();
-    } catch (e) {
-      toast('Failed: ' + (e.reason || e.message));
     }
     btn.disabled = false;
     btn.innerHTML = '<i class="ti ti-send" aria-hidden="true"></i> Submit prediction';
   }
 
-  /* ── Resolve prediction ── */
   async function doResolve() {
-    if (!contract) return;
-    const u = document.getElementById('resolveUser').value.trim();
-    const idx = document.getElementById('resolveIndex').value;
-    const price = parseFloat(document.getElementById('resolvePrice').value);
+    const u = $('resolveUser').value.trim();
+    const idx = $('resolveIndex').value;
+    const price = parseFloat($('resolvePrice').value);
     if (!u || !ethers.utils.isAddress(u)) { toast('Enter a valid user address'); return; }
     if (idx === '') { toast('Enter a prediction index'); return; }
     if (!price || isNaN(price)) { toast('Enter the actual price'); return; }
-
     const priceCents = Math.round(price * 100);
-    const btn = document.getElementById('resolveBtn');
+    const btn = $('resolveBtn');
     btn.disabled = true;
-    btn.innerHTML = '<i class="ti ti-loader" aria-hidden="true"></i> Sending…';
-    try {
-      toast('Confirm the transaction in your wallet…', 8000);
-      const tx = await contract.resolvePrediction(u, parseInt(idx), priceCents);
-      await tx.wait();
-      toast('Prediction resolved!');
-      await loadPredictions();
-    } catch (e) {
-      toast('Failed: ' + (e.reason || e.message));
+    btn.innerHTML = spinner + ' Waiting for wallet…';
+    const rc = await sendTx('Resolve', () => callWithBuffer(ritualW, 'resolvePrediction', [u, parseInt(idx, 10), priceCents]));
+    if (rc) {
+      await sleep(700);
+      await Promise.allSettled([loadPredictions(), loadStats(), loadLeaderboard()]);
     }
     btn.disabled = false;
     btn.innerHTML = '<i class="ti ti-check" aria-hidden="true"></i> Resolve prediction';
   }
 
-  /* ── Address lookup ── */
   async function doLookup() {
-    const addr = document.getElementById('lookupAddr').value.trim();
+    const addr = $('lookupAddr').value.trim();
     if (!addr || !ethers.utils.isAddress(addr)) { toast('Enter a valid Ethereum address'); return; }
-    const out = document.getElementById('lookupResult');
+    const out = $('lookupResult');
     out.innerHTML = '<div style="font-size:13px;color:var(--text2);margin-top:8px;">Loading…</div>';
     try {
-      const p = provider || new ethers.providers.JsonRpcProvider('https://api.testnet.fhenix.zone:7747');
-      const ro = new ethers.Contract(CA, ABI, p);
-      const [[, streak, longest, xp, badge], checkedIn, pCount] = await Promise.all([
-        ro.getUserStats(addr),
-        ro.isCheckedInToday(addr),
-        ro.getPredictionCount(addr)
+      const [stats, checkedIn, pCount] = await Promise.all([
+        ritualR.getUserStats(addr), ritualR.isCheckedInToday(addr), ritualR.getPredictionCount(addr)
       ]);
+      const streak = Number(stats[1]), longest = Number(stats[2]), xp = Number(stats[3]), badge = Number(stats[4]);
       out.innerHTML = `
         <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px;">
           <div class="stat-card"><div class="stat-label">Streak</div><div class="stat-value">${streak}</div></div>
@@ -1028,61 +1308,260 @@
           <div class="stat-card"><div class="stat-label">Badge</div><div class="stat-value">${badge > 0 ? 'Tier ' + badge : '—'}</div></div>
         </div>
         <div style="font-size:12px;color:var(--text2);margin-top:8px;">
-          Longest streak: ${longest} &nbsp;·&nbsp; Predictions: ${pCount} &nbsp;·&nbsp;
+          Longest streak: ${longest} &nbsp;·&nbsp; Predictions: ${pCount.toString()} &nbsp;·&nbsp;
           ${checkedIn ? '<span style="color:var(--success-text);">✓ Checked in today</span>' : 'Not checked in today'}
         </div>`;
     } catch (e) {
-      out.innerHTML = '<div style="font-size:13px;color:var(--danger-text);margin-top:8px;">Lookup failed: ' + (e.message || e) + '</div>';
+      out.innerHTML = '<div style="font-size:13px;color:var(--danger-text);margin-top:8px;">Lookup failed: ' + esc(e.message || e) + '</div>';
     }
   }
 
-  /* ── Tabs ── */
   function switchTab(tab) {
-    document.getElementById('tabBtnMine').classList.toggle('active', tab === 'mine');
-    document.getElementById('tabBtnResolve').classList.toggle('active', tab === 'resolve');
-    document.getElementById('paneMine').style.display = tab === 'mine' ? '' : 'none';
-    document.getElementById('paneResolve').style.display = tab === 'resolve' ? '' : 'none';
+    $('tabBtnMine').classList.toggle('active', tab === 'mine');
+    $('tabBtnResolve').classList.toggle('active', tab === 'resolve');
+    $('paneMine').style.display = tab === 'mine' ? '' : 'none';
+    $('paneResolve').style.display = tab === 'resolve' ? '' : 'none';
   }
 
-  /* ── Theme toggle ── */
-  function applyTheme(dark) {
-    document.body.classList.toggle('theme-dark', dark);
-    document.body.classList.toggle('theme-light', !dark);
-    document.getElementById('themeIcon').className = dark ? 'ti ti-sun' : 'ti ti-moon';
-    try { localStorage.setItem('dr-theme', dark ? 'dark' : 'light'); } catch(e){}
+  /* ═══════════════ Leaderboard (XP + quiz points) ═══════════════ */
+  async function loadLeaderboard(manual) {
+    const box = $('lbList');
+    if (!lbR) {
+      box.innerHTML = '<div class="notice">Leaderboard isn\'t linked yet. Deploy the FhenixLeaderboard contract and paste its address into <code>LB_CA</code> in this file.</div>';
+      $('joinBtn').style.display = 'none';
+      return;
+    }
+    if (manual) box.innerHTML = '<div class="empty">Refreshing…</div>';
+    try {
+      const count = (await lbR.playerCount()).toNumber();
+      if (!count) {
+        box.innerHTML = '<div class="empty">No players yet. Take the quiz or join to claim the first spot.</div>';
+        updateJoinBtn();
+        return;
+      }
+      const r = await lbR.getPlayers(0, Math.min(count, 300));
+      let rows = r[0].map((a, i) => {
+        const xp = Number(r[1][i]), pts = Number(r[2][i]);
+        return { addr: a, xp, pts, total: xp + pts };
+      });
+      rows.sort((a, b) => b.total - a.total || b.pts - a.pts || a.addr.localeCompare(b.addr));
+      const me = userAddr ? userAddr.toLowerCase() : null;
+      const top = rows.slice(0, 20);
+      const medals = ['🥇', '🥈', '🥉'];
+      const line = (row, rank, isMe) => `
+        <div class="lb-row ${isMe ? 'me' : ''}">
+          <span class="lb-rank">${rank <= 3 ? medals[rank - 1] : rank}</span>
+          <span class="lb-addr">${short(row.addr)}${isMe ? '<span class="lb-you">you</span>' : ''}</span>
+          <span class="lb-break">XP ${row.xp} · Quiz ${row.pts}</span>
+          <span class="lb-total">${row.total}</span>
+        </div>`;
+      let html = '<div class="lb-head"><span>#</span><span>Player</span><span>Total</span></div>';
+      html += top.map((row, i) => line(row, i + 1, row.addr.toLowerCase() === me)).join('');
+      const myIdx = me ? rows.findIndex(x => x.addr.toLowerCase() === me) : -1;
+      if (myIdx >= 20) html += '<div class="lb-break" style="text-align:center;padding:4px;">···</div>' + line(rows[myIdx], myIdx + 1, true);
+      box.innerHTML = html;
+      updateJoinBtn();
+    } catch (e) {
+      console.error('loadLeaderboard error:', e);
+      box.innerHTML = '<div class="empty">Couldn\'t load the leaderboard. Tap refresh to try again.</div>';
+    }
   }
-  function toggleTheme() { applyTheme(!document.body.classList.contains('theme-dark')); }
-  (function initTheme() {
-    const saved = (() => { try { return localStorage.getItem('dr-theme'); } catch(e){ return null; } })();
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    applyTheme(saved ? saved === 'dark' : prefersDark);
-  })();
 
-  /* ── Disconnect wallet ── */
-  function disconnectWallet() {
-    userAddr = null; provider = null; signer = null; contract = null;
-    document.getElementById('connectBtn').classList.remove('connected');
-    document.getElementById('connectLabel').textContent = 'Connect wallet';
-    document.getElementById('disconnectBtn').style.display = 'none';
-    document.getElementById('predBtn').disabled = true;
-    document.getElementById('resolveBtn').disabled = true;
-    document.getElementById('checkinBtn').disabled = true;
-    document.getElementById('statStreak').textContent = '—';
-    document.getElementById('statXp').textContent = '—';
-    document.getElementById('statBadge').textContent = '—';
-    document.getElementById('statBadgeSub').textContent = '—';
-    document.getElementById('statLongest').textContent = 'Longest: —';
-    document.getElementById('xpBar').style.width = '0%';
-    document.getElementById('predList').innerHTML = '<div style="font-size:13px;color:var(--text2);">Connect your wallet to see predictions.</div>';
-    document.getElementById('badgeRow').innerHTML = '<div style="font-size:13px;color:var(--text2);">Connect wallet to see your badges.</div>';
-    document.getElementById('checkinStatus').textContent = '';
-    toast('Wallet disconnected');
+  function updateJoinBtn() {
+    const b = $('joinBtn');
+    if (!lbR || lbJoined) { b.style.display = 'none'; return; }
+    b.style.display = 'inline-flex';
+    b.innerHTML = '<i class="ti ti-user-plus" aria-hidden="true"></i> ' + (userAddr ? 'Join leaderboard' : 'Connect & join leaderboard');
   }
 
-  /* ── Return key on lookup ── */
-  document.getElementById('lookupAddr').addEventListener('keydown', e => { if (e.key === 'Enter') doLookup(); });
+  async function doJoin() {
+    const rc = await sendTx('Join leaderboard', () => callWithBuffer(lbW, 'join', []));
+    if (rc) { lbJoined = true; await sleep(700); await Promise.allSettled([loadLeaderboard(), loadQuizStatus()]); }
+  }
 
-  /* ── Kick off live prices ── */
+  /* ═══════════════ Quiz ═══════════════ */
+  // First answer in each list is the correct one; options are shuffled at runtime.
+  const QUIZ_BANK = [
+    { q: 'What makes Fully Homomorphic Encryption (FHE) special?',
+      a: ['It lets you compute on data while it stays encrypted', 'It proves a statement is true without showing the data', 'It hides who sent a transaction', 'It makes transactions settle instantly'],
+      why: 'FHE runs operations directly on ciphertexts, so the data is never exposed while it is being processed.' },
+    { q: 'Which Solidity type holds an encrypted 32-bit unsigned integer in a Fhenix contract?',
+      a: ['euint32', 'uint32e', 'cipher32', 'secret32'],
+      why: 'Fhenix\'s encrypted types start with "e": euint8, euint16, euint32, euint64, ebool and so on.' },
+    { q: 'Why can\'t a contract simply use an if-statement on an encrypted boolean (ebool)?',
+      a: ['The value is hidden, so the contract uses FHE.select to choose between two encrypted results', 'Solidity doesn\'t support if-statements', 'An ebool can only be used off-chain', 'It would cost too much gas to compile'],
+      why: 'Branching on a secret would leak it. FHE.select picks between two encrypted values without revealing which one was chosen.' },
+    { q: 'What does FHE.allowThis(value) do?',
+      a: ['Lets the contract itself keep using that encrypted value later', 'Decrypts the value for everyone', 'Deletes the value from storage', 'Converts the value into a plain uint'],
+      why: 'Access to encrypted values is explicit. allowThis gives the contract permission to reuse the value in future transactions.' },
+    { q: 'Which FHE scheme does Fhenix build on?',
+      a: ['TFHE', 'CKKS', 'Groth16', 'ECDSA'],
+      why: 'Fhenix is built on TFHE, which is well suited to encrypted booleans and small integers. CKKS is another FHE scheme, Groth16 is a ZK proof system and ECDSA is a signature scheme.' },
+    { q: 'In Fhenix CoFHE, where does the heavy FHE math actually run?',
+      a: ['On an off-chain coprocessor that the contract talks to', 'Inside every validator\'s EVM', 'In the user\'s browser', 'On a central server that decrypts inputs first'],
+      why: 'FHE is far too heavy for normal EVM execution, so CoFHE hands the computation to a coprocessor while the chain keeps only references.' },
+    { q: 'What problem does "bootstrapping" solve in FHE?',
+      a: ['Noise that builds up in ciphertexts as operations pile up', 'Slow block times', 'Lost private keys', 'Replay attacks on signatures'],
+      why: 'Every homomorphic operation adds noise. Bootstrapping refreshes a ciphertext so computation can continue.' },
+    { q: 'A sealed-bid auction must compare bids without revealing them on-chain. What fits best?',
+      a: ['FHE — compare the encrypted bids directly', 'A Solidity mapping marked private', 'Emitting bids in an event', 'A public getter protected by a password'],
+      why: 'Solidity\'s "private" keyword only limits access from other contracts — the data is still readable on-chain. FHE keeps bids encrypted while still allowing comparisons.' },
+    { q: 'What should a dApp do with a secret value before sending it to a Fhenix contract?',
+      a: ['Encrypt it in the browser with the Fhenix client SDK', 'Send it in plain and let the contract encrypt it', 'Hash it with keccak256 first', 'Nothing — wallets encrypt inputs automatically'],
+      why: 'Anything sent as plain calldata is public forever. Inputs must be encrypted on the client before the transaction is sent.' },
+    { q: 'What does an encrypted type like euint32 actually store on-chain?',
+      a: ['A handle that points to the ciphertext', 'The plain number, XOR-masked', 'A Merkle root of the value', 'The owner\'s private key'],
+      why: 'On-chain you only hold a handle. The ciphertext itself lives with the coprocessor, and access rules decide who may use it.' },
+    { q: 'How can a user privately read their own encrypted result?',
+      a: ['It is re-encrypted ("sealed") to their key and opened in their browser', 'The contract emits it in plaintext', 'Anyone can call a public decrypt function', 'Validators share it on request'],
+      why: 'Sealing re-encrypts the value under the user\'s own public key, so only their client can open it.' },
+    { q: 'Which statement about FHE is FALSE?',
+      a: ['FHE operations are cheaper and faster than plaintext ones', 'Encrypted values can be added and compared without decrypting', 'FHE can keep votes or balances confidential', 'FHE inputs are encrypted before they reach the chain'],
+      why: 'FHE is computationally heavy — that is exactly why coprocessors exist. The trade-off for privacy is extra compute.' }
+  ];
+  const QUIZ_LEN = 5;
+  const quiz = { qs: [], i: 0, correct: 0, answered: false, saved: false, best: 0 };
+
+  function shuffle(arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function startQuiz() {
+    quiz.qs = shuffle(QUIZ_BANK).slice(0, QUIZ_LEN).map(q => ({
+      q: q.q, why: q.why,
+      opts: shuffle(q.a.map((t, i) => ({ t, ok: i === 0 })))
+    }));
+    quiz.i = 0; quiz.correct = 0; quiz.answered = false; quiz.saved = false;
+    $('quizModal').classList.add('open');
+    renderQuestion();
+    if (userAddr) loadQuizStatus();
+  }
+  function closeQuiz() { $('quizModal').classList.remove('open'); }
+
+  function renderQuestion() {
+    const q = quiz.qs[quiz.i];
+    quiz.answered = false;
+    const body = $('quizBody');
+    body.innerHTML = `
+      <div class="quiz-progress"><span>Question ${quiz.i + 1} of ${quiz.qs.length}</span><span>${quiz.correct} correct</span></div>
+      <div class="quiz-bar"><div style="width:${(quiz.i / quiz.qs.length) * 100}%"></div></div>
+      <div class="quiz-q">${esc(q.q)}</div>
+      <div id="quizOpts"></div>
+      <div id="quizFeedback"></div>`;
+    const opts = $('quizOpts');
+    q.opts.forEach((o, idx) => {
+      const b = document.createElement('button');
+      b.className = 'quiz-opt';
+      b.textContent = o.t;
+      b.onclick = () => answerQuiz(idx);
+      opts.appendChild(b);
+    });
+  }
+
+  function answerQuiz(idx) {
+    if (quiz.answered) return;
+    quiz.answered = true;
+    const q = quiz.qs[quiz.i];
+    const chosen = q.opts[idx];
+    if (chosen.ok) quiz.correct++;
+    [...$('quizOpts').children].forEach((b, i) => {
+      b.disabled = true;
+      if (q.opts[i].ok) b.classList.add('right');
+      else if (i === idx) b.classList.add('wrong');
+    });
+    const last = quiz.i === quiz.qs.length - 1;
+    const fb = $('quizFeedback');
+    fb.innerHTML = `<div class="quiz-why"><strong>${chosen.ok ? 'Correct.' : 'Not quite.'}</strong> ${esc(q.why)}</div>
+      <button class="btn primary" id="quizNextBtn">${last ? 'See results' : 'Next question'}</button>`;
+    $('quizNextBtn').onclick = () => { if (last) showQuizResult(); else { quiz.i++; renderQuestion(); } };
+    $('quizNextBtn').focus();
+  }
+
+  function showQuizResult() {
+    const total = quiz.qs.length, pts = quiz.correct * 10;
+    const msg = quiz.correct === total ? 'Perfect run — you know your FHE.'
+      : quiz.correct >= total - 1 ? 'Strong result.'
+      : quiz.correct >= 3 ? 'Solid. A few more to sharpen.'
+      : 'Good start — read the explanations and try again.';
+    const prevBest = Number(lsGet('dr-quiz-best') || 0);
+    if (quiz.correct > prevBest) { lsSet('dr-quiz-best', String(quiz.correct)); loadQuizStatus(); }
+
+    let scoreLine;
+    if (!LB_CA) scoreLine = 'Practice round — link the leaderboard contract to save scores.';
+    else if (userAddr && roundsLeft === 0) scoreLine = 'You\'ve used all scored rounds for today, so this one is practice. Scored rounds reset daily (UTC).';
+    else scoreLine = `This round is worth ${pts} leaderboard points.`;
+
+    $('quizBody').innerHTML = `
+      <div class="quiz-score">
+        <div class="big">${quiz.correct} / ${total}</div>
+        <div class="msg">${esc(msg)}</div>
+        <div class="msg" style="margin-top:8px;">${esc(scoreLine)}</div>
+      </div>
+      <div class="quiz-actions" id="quizActions"></div>`;
+    const acts = $('quizActions');
+    const canSave = !!LB_CA && !(userAddr && roundsLeft === 0);
+    if (canSave) {
+      const save = document.createElement('button');
+      save.className = 'btn primary'; save.id = 'quizSaveBtn';
+      save.innerHTML = '<i class="ti ti-trophy" aria-hidden="true"></i> ' + (userAddr ? 'Save score to leaderboard' : 'Connect & save score');
+      save.onclick = saveQuizScore;
+      acts.appendChild(save);
+    }
+    const again = document.createElement('button');
+    again.className = 'btn'; again.innerHTML = '<i class="ti ti-repeat" aria-hidden="true"></i> Play again';
+    again.onclick = startQuiz;
+    const close = document.createElement('button');
+    close.className = 'btn'; close.textContent = 'Close';
+    close.onclick = closeQuiz;
+    acts.appendChild(again); acts.appendChild(close);
+  }
+
+  async function saveQuizScore() {
+    if (quiz.saved) return;
+    const btn = $('quizSaveBtn');
+    btn.disabled = true;
+    btn.innerHTML = spinner + ' Waiting for wallet…';
+    const rc = await sendTx('Save quiz score', () => callWithBuffer(lbW, 'submitQuiz', [quiz.correct, quiz.qs.length]));
+    if (rc) {
+      quiz.saved = true;
+      lbJoined = true;
+      btn.innerHTML = '<i class="ti ti-check" aria-hidden="true"></i> Score saved';
+      await sleep(700);
+      await Promise.allSettled([loadLeaderboard(), loadQuizStatus()]);
+    } else {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="ti ti-trophy" aria-hidden="true"></i> Save score to leaderboard';
+    }
+  }
+
+  async function loadQuizStatus() {
+    const el = $('quizMeta');
+    const best = Number(lsGet('dr-quiz-best') || 0);
+    const bestTxt = best ? ' · Best round on this device: ' + best + '/' + QUIZ_LEN : '';
+    if (!lbR) { el.textContent = 'Practice mode — scores aren\'t saved yet' + bestTxt; return; }
+    if (!userAddr) { el.textContent = 'Connect a wallet to earn leaderboard points' + bestTxt; updateJoinBtn(); return; }
+    try {
+      const p = await lbR.getPlayer(userAddr);
+      lbJoined = !!p[0]; quizPts = Number(p[1]); roundsLeft = Number(p[3]);
+      el.textContent = 'Your quiz points: ' + quizPts + ' · Scored rounds left today: ' + roundsLeft;
+    } catch (e) {
+      console.error('loadQuizStatus error:', e);
+      el.textContent = '';
+    }
+    updateJoinBtn();
+  }
+
+  /* ═══════════════ Boot ═══════════════ */
+  $('lookupAddr').addEventListener('keydown', e => { if (e.key === 'Enter') doLookup(); });
+  updateCheckinBtn();
+  loadGlobal();
+  loadLeaderboard();
+  loadQuizStatus();
   fetchPrices();
   setInterval(fetchPrices, 60000);
 </script>
